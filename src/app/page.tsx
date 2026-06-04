@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TextMarquee from "@/components/TextMarquee";
 import HeroBento from "@/components/HeroBento";
-import Preloader from "@/components/Preloader";
 import TelemetryMesh from "@/components/TelemetryMesh";
 import About from "@/components/About";
 import Projects from "@/components/Projects";
@@ -13,11 +12,9 @@ import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const pageRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const ghostPathRef = useRef<SVGPathElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
   // Monitor screen width to safely disable heavy scroll listeners on mobile
@@ -35,7 +32,7 @@ export default function Home() {
 
   // Track scroll progress across Hero and About sections (approx. 3.5x viewport height total)
   useEffect(() => {
-    if (typeof window === "undefined" || isMobile || isLoading) return;
+    if (typeof window === "undefined" || isMobile) return;
 
     // Initialize path length once the SVG path is rendered in the DOM
     if (pathRef.current) {
@@ -52,14 +49,7 @@ export default function Home() {
     const handleScroll = () => {
       if (!pageRef.current) return;
       const viewportHeight = window.innerHeight;
-      
-      // 1. Calculate About progress for highlights (accounting for Hero section offset of 0.2 viewport)
       const scrollY = window.scrollY;
-      const aboutStart = viewportHeight * 0.2;
-      const aboutDuration = viewportHeight * 3.3;
-      const aboutProgress = (scrollY - aboutStart) / aboutDuration;
-      const clampedAboutProgress = Math.max(0, Math.min(1, aboutProgress));
-      setScrollProgress(clampedAboutProgress);
 
       // 2. Calculate Global scroll progress and target tip Y-coordinate to keep the drawing tip at the middle/lower screen
       const scrollHeight = document.documentElement.scrollHeight || 4000;
@@ -97,26 +87,19 @@ export default function Home() {
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMobile, isLoading]);
+  }, [isMobile]);
 
   return (
     <>
-      {/* â”€â”€ Typographic Countdown Preloader curtain overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <Preloader onComplete={() => setIsLoading(false)} />
+      <Navbar />
 
-      {!isLoading && <Navbar />}
-
-      {/* â”€â”€ Cinematic reveal wrapper with scaling depth and opacity fade â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Cinematic reveal wrapper with scaling depth and opacity fade ── */}
       <div 
         ref={pageRef}
-        className={`flex flex-col min-h-screen relative transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isLoading 
-            ? "opacity-0 scale-[0.95] max-h-screen overflow-hidden" 
-            : "opacity-100 scale-100"
-        }`}
+        className="flex flex-col min-h-screen relative opacity-100 scale-100"
       >
         {/* Scroll-Drawn Telemetry Curl — commented out, preserved for later
-        {!isLoading && !isMobile && (
+        {!isMobile && (
           <svg 
             viewBox="0 0 1000 4000"
             preserveAspectRatio="none"
@@ -157,7 +140,7 @@ export default function Home() {
             <HeroBento />
           </section>
           <TelemetryMesh />
-          <About scrollProgress={scrollProgress} />
+          <About />
           <Projects />
           <ContactForm />
           <Footer />

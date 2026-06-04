@@ -4,11 +4,12 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 const menuLinks = [
-  { name: "HOME", href: "#home" },
-  { name: "ABOUT", href: "#about" },
-  { name: "STACK", href: "#stack" },
-  { name: "PROJECTS", href: "#projects" },
-  { name: "CONTACT", href: "#contact" }
+  { name: "HOME", href: "/#home" },
+  { name: "ABOUT", href: "/#about" },
+  { name: "STACK", href: "/#stack" },
+  { name: "PROJECTS", href: "/projects" },
+  { name: "BLOG", href: "/blog" },
+  { name: "CONTACT", href: "/#contact" }
 ];
 
 const Navbar = () => {
@@ -26,6 +27,18 @@ const Navbar = () => {
   // Intersection/Scroll detector to find active section
   useEffect(() => {
     const handleScrollActive = () => {
+      if (typeof window !== "undefined") {
+        const path = window.location.pathname;
+        if (path.startsWith("/projects")) {
+          setActiveSection("PROJECTS");
+          return;
+        }
+        if (path.startsWith("/blog")) {
+          setActiveSection("BLOG");
+          return;
+        }
+      }
+
       if (window.scrollY < 150) {
         setActiveSection("HOME");
         return;
@@ -103,10 +116,18 @@ const Navbar = () => {
   const visibleLinks = menuLinks.filter((link) => link.name !== activeSection);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const isAnchor = href.startsWith("#") || href.startsWith("/#");
+    const isCurrentlyOnLandingPage = typeof window !== "undefined" && window.location.pathname === "/";
+    
+    if (!isAnchor || !isCurrentlyOnLandingPage) {
+      setIsOpen(false);
+      return;
+    }
+
     e.preventDefault();
     setIsOpen(false);
     
-    const targetId = href.replace("#", "");
+    const targetId = href.replace("/#", "").replace("#", "");
     const targetElement = document.getElementById(targetId);
     
     if (targetElement) {

@@ -8,32 +8,36 @@ const HeroBento = () => {
 
 
   const pipelineSteps = [
-    { label: "01 / RESEARCH", desc: "Bottleneck & constraint audit", details: "SLA specs, CPU limits, & DB schemas" },
-    { label: "02 / DECISIONS", desc: "Stack & architectural design", details: "Cache layers, indexing, & proxy routing" },
-    { label: "03 / DEVELOPMENT", desc: "Full-stack performance build", details: "React frontends, Node APIs, state sync" },
-    { label: "04 / CLOUD INFRA", desc: "CI/CD automated deployment", details: "Jenkins, AWS EC2, & OpenVPN gateways" }
+    { label: "01 / RESEARCH", desc: "Bottleneck & constraint audit", details: "SLA specs, CPU limits, & DB schemas", filter: "systems" },
+    { label: "02 / DECISIONS", desc: "Stack & architectural design", details: "Cache layers, indexing, & proxy routing", filter: "systems" },
+    { label: "03 / DEVELOPMENT", desc: "Full-stack performance build", details: "React frontends, Node APIs, state sync", filter: "web" },
+    { label: "04 / CLOUD INFRA", desc: "CI/CD automated deployment", details: "Jenkins, AWS EC2, & OpenVPN gateways", filter: "cloud" }
   ];
 
   const stackLayers = [
     {
       label: "CLIENT LAYER",
       tech: ["React.js", "Next.js", "Tailwind CSS"],
-      desc: "SSR rendered UI"
+      desc: "SSR rendered UI",
+      filter: "web"
     },
     {
       label: "API LAYER",
       tech: ["Node.js", "Express.js", "JWT Auth"],
-      desc: "Rate-limited endpoints"
+      desc: "Rate-limited endpoints",
+      filter: "systems"
     },
     {
       label: "DATA LAYER",
       tech: ["PostgreSQL", "MongoDB", "Prisma ORM"],
-      desc: "Indexed schemas"
+      desc: "Indexed schemas",
+      filter: "data"
     },
     {
       label: "INFRA LAYER",
       tech: ["AWS EC2", "PM2 Cluster", "OpenVPN"],
-      desc: "Zero-downtime deploy"
+      desc: "Zero-downtime deploy",
+      filter: "cloud"
     }
   ];
 
@@ -73,11 +77,12 @@ const HeroBento = () => {
               {pipelineSteps.map((step, index) => {
                 const isActive = pipelineStep === index;
                 return (
-                  <div
+                  <a
                     key={step.label}
+                    href={`/projects?filter=${step.filter}`}
                     onMouseEnter={() => setPipelineStep(index)}
                     onMouseLeave={() => setPipelineStep(null)}
-                    className="relative flex flex-col gap-0.5 cursor-default"
+                    className="relative flex flex-col gap-0.5 cursor-pointer group block"
                   >
                     {/* Node dot */}
                     <div 
@@ -89,12 +94,12 @@ const HeroBento = () => {
                     />
                     
                     <span className={`text-[8px] font-mono tracking-[0.2em] transition-colors duration-200 ${
-                      isActive ? "text-orange-400" : "text-neutral-600"
+                      isActive ? "text-orange-400 font-bold" : "text-neutral-600"
                     }`}>
                       {step.label}
                     </span>
                     <span className={`text-[12px] font-author font-normal leading-tight transition-colors duration-200 ${
-                      isActive ? "text-white" : "text-neutral-400"
+                      isActive ? "text-white" : "text-neutral-400 group-hover:text-neutral-200"
                     }`}>
                       {step.desc}
                     </span>
@@ -107,7 +112,7 @@ const HeroBento = () => {
                         ↳ {step.details}
                       </span>
                     </div>
-                  </div>
+                  </a>
                 );
               })}
             </div>
@@ -127,14 +132,15 @@ const HeroBento = () => {
               {stackLayers.map((layer, i) => {
                 const isActive = activeLayer === i;
                 return (
-                  <div
+                  <a
                     key={layer.label}
+                    href={`/projects?filter=${layer.filter}`}
                     onMouseEnter={() => setActiveLayer(i)}
                     onMouseLeave={() => setActiveLayer(null)}
-                    className={`border rounded-md px-3.5 py-2.5 transition-all duration-250 cursor-default ${
+                    className={`block border rounded-md px-3.5 py-2.5 transition-all duration-250 cursor-pointer ${
                       isActive
                         ? "border-orange-500/40 bg-orange-500/[0.05] shadow-[0_0_16px_rgba(249,115,22,0.08)]"
-                        : "border-white/[0.06] bg-white/[0.015]"
+                        : "border-white/[0.06] bg-white/[0.015] hover:border-white/[0.12]"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1.5">
@@ -163,7 +169,7 @@ const HeroBento = () => {
                         </span>
                       ))}
                     </div>
-                  </div>
+                  </a>
                 );
               })}
             </div>

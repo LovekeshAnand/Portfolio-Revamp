@@ -10,10 +10,142 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const About = ({ scrollProgress = 0 }: { scrollProgress?: number }) => {
+const About = () => {
   const [activeStackTab, setActiveStackTab] = useState<string>("all");
   const [resumeOpen, setResumeOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Refs for direct DOM class/style updates to prevent whole-page React re-renders on scroll
+  const highlight1Ref = useRef<HTMLSpanElement>(null);
+  const highlight2Ref = useRef<HTMLSpanElement>(null);
+  const underline2Ref = useRef<HTMLSpanElement>(null);
+  const bento1Ref = useRef<HTMLDivElement>(null);
+  const bento1TitleRef = useRef<HTMLHeadingElement>(null);
+  const bento2Ref = useRef<HTMLDivElement>(null);
+  const bento2TitleRef = useRef<HTMLHeadingElement>(null);
+  const timelineCardRef = useRef<HTMLDivElement>(null);
+  const timelineDotRef = useRef<HTMLDivElement>(null);
+  const timelineTitleRef = useRef<HTMLHeadingElement>(null);
+  const achievementsCardRef = useRef<HTMLDivElement>(null);
+  const resumeCardRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleScroll = () => {
+      const viewportHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+      const aboutStart = viewportHeight * 0.2;
+      const aboutDuration = viewportHeight * 3.3;
+      const progress = (scrollY - aboutStart) / aboutDuration;
+      const clampedProgress = Math.max(0, Math.min(1, progress));
+
+      // 1. scrollProgress > 0.15
+      if (highlight1Ref.current) {
+        if (clampedProgress > 0.15) {
+          highlight1Ref.current.className = "transition-all duration-700 text-orange-400 font-normal italic";
+        } else {
+          highlight1Ref.current.className = "transition-all duration-700 text-white";
+        }
+      }
+
+      // 2. scrollProgress > 0.22
+      if (highlight2Ref.current) {
+        if (clampedProgress > 0.22) {
+          highlight2Ref.current.className = "relative inline-block transition-all duration-700 font-normal text-orange-400";
+        } else {
+          highlight2Ref.current.className = "relative inline-block transition-all duration-700 font-normal text-white";
+        }
+      }
+      if (underline2Ref.current) {
+        if (clampedProgress > 0.22) {
+          underline2Ref.current.className = "absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left scale-x-100";
+        } else {
+          underline2Ref.current.className = "absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left scale-x-0";
+        }
+      }
+
+      // 3. scrollProgress > 0.32
+      if (bento1Ref.current) {
+        if (clampedProgress > 0.32) {
+          bento1Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-orange-500/30 bg-black/60 text-neutral-200 shadow-[6px_6px_0px_rgba(249,115,22,0.08)]";
+        } else {
+          bento1Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400";
+        }
+      }
+      if (bento1TitleRef.current) {
+        if (clampedProgress > 0.32) {
+          bento1TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-orange-400";
+        } else {
+          bento1TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400";
+        }
+      }
+
+      // 4. scrollProgress > 0.38
+      if (bento2Ref.current) {
+        if (clampedProgress > 0.38) {
+          bento2Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-orange-500/30 bg-black/60 text-neutral-200 shadow-[6px_6px_0px_rgba(249,115,22,0.08)]";
+        } else {
+          bento2Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400";
+        }
+      }
+      if (bento2TitleRef.current) {
+        if (clampedProgress > 0.38) {
+          bento2TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-orange-400";
+        } else {
+          bento2TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400";
+        }
+      }
+
+      // 5. scrollProgress > 0.58
+      if (timelineCardRef.current) {
+        if (clampedProgress > 0.58) {
+          timelineCardRef.current.className = "relative transition-all duration-700 p-4 rounded-xl backdrop-blur-md border bg-white/[0.02] border-orange-500/40 shadow-[4px_4px_0px_rgba(249,115,22,0.08)]";
+        } else {
+          timelineCardRef.current.className = "relative transition-all duration-700 p-4 rounded-xl backdrop-blur-md border bg-white/[0.01] border-white/5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)]";
+        }
+      }
+      if (timelineDotRef.current) {
+        if (clampedProgress > 0.58) {
+          timelineDotRef.current.className = "absolute -left-[31px] top-5.5 w-4 h-4 rounded-full border-2 bg-black transition-all duration-500 border-orange-500 scale-110";
+        } else {
+          timelineDotRef.current.className = "absolute -left-[31px] top-5.5 w-4 h-4 rounded-full border-2 bg-black transition-all duration-500 border-neutral-700";
+        }
+      }
+      if (timelineTitleRef.current) {
+        if (clampedProgress > 0.58) {
+          timelineTitleRef.current.className = "font-author text-lg font-semibold mt-1 transition-colors duration-500 text-orange-400";
+        } else {
+          timelineTitleRef.current.className = "font-author text-lg font-semibold mt-1 transition-colors duration-500 text-white";
+        }
+      }
+
+      // 6. scrollProgress > 0.65
+      if (achievementsCardRef.current) {
+        if (clampedProgress > 0.65) {
+          achievementsCardRef.current.className = "border p-5 relative group transition-all duration-700 rounded-xl backdrop-blur-md border-orange-500/40 bg-white/[0.02] shadow-[6px_6px_0px_rgba(249,115,22,0.08)] text-white";
+        } else {
+          achievementsCardRef.current.className = "border p-5 relative group transition-all duration-700 rounded-xl backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400";
+        }
+      }
+
+      // 7. scrollProgress > 0.72
+      if (resumeCardRef.current) {
+        if (clampedProgress > 0.72) {
+          resumeCardRef.current.className = "group relative w-full rounded-xl overflow-hidden border transition-all duration-700 text-left border-orange-500/40 shadow-[12px_12px_0px_rgba(249,115,22,0.08)] hover:border-orange-500/50 hover:shadow-[0_12px_48px_rgba(249,115,22,0.15)] hover:scale-[1.01] cursor-pointer";
+        } else {
+          resumeCardRef.current.className = "group relative w-full rounded-xl overflow-hidden border transition-all duration-700 text-left border-white/5 shadow-[12px_12px_0px_rgba(0,0,0,0.2)] hover:border-orange-500/50 hover:shadow-[0_12px_48px_rgba(249,115,22,0.15)] hover:scale-[1.01] cursor-pointer";
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // initial state run
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useGSAP(() => {
     const headings = gsap.utils.toArray<HTMLElement>(".about-heading-reveal");
@@ -105,24 +237,24 @@ const About = ({ scrollProgress = 0 }: { scrollProgress?: number }) => {
         <div className="lg:col-span-8 p-8 md:p-16 flex flex-col justify-center select-text bg-black/40 backdrop-blur-md border-b lg:border-b-0 lg:border-l border-white/5">
           {/* Chronatic Color-Shift Text Sync with Scroll */}
           <p className="font-author text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.2] text-white tracking-normal font-normal mb-8 max-w-4xl transition-colors duration-500">
-            I am a <span className={`transition-all duration-700 ${scrollProgress > 0.15 ? "text-orange-400 font-normal italic" : "text-white"}`}>20-year-old full-stack developer</span> with a growing obsession for the infrastructure that powers software. I don't just write code — I care deeply about <span className={`relative inline-block transition-all duration-700 font-normal ${scrollProgress > 0.22 ? "text-orange-400" : "text-white"}`}>
+            I am a <span ref={highlight1Ref} className="transition-all duration-700 text-white">20-year-old full-stack developer</span> with a growing obsession for the infrastructure that powers software. I don't just write code — I care deeply about <span ref={highlight2Ref} className="relative inline-block transition-all duration-700 font-normal text-white">
               how it deploys, scales, and survives
-              <span className={`absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left ${scrollProgress > 0.22 ? "scale-x-100" : "scale-x-0"}`} />
+              <span ref={underline2Ref} className="absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left scale-x-0" />
             </span> — designing architectures that run efficiently under real CPU, memory, and network pressure.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-white/5 pt-8 mt-4 font-author">
             {/* Core Philosophy dynamic highlight */}
-            <div className={`p-4 border rounded-xl transition-all duration-700 backdrop-blur-md ${scrollProgress > 0.32 ? "border-orange-500/30 bg-black/60 text-neutral-200 shadow-[6px_6px_0px_rgba(249,115,22,0.08)]" : "border-white/5 bg-white/[0.01] text-neutral-400"}`}>
-              <h4 className={`text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 ${scrollProgress > 0.32 ? "text-orange-400" : "text-neutral-400"}`}>CORE PHILOSOPHY</h4>
+            <div ref={bento1Ref} className="p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400">
+              <h4 ref={bento1TitleRef} className="text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400">CORE PHILOSOPHY</h4>
               <p className="text-sm leading-relaxed font-light">
                 I believe the best engineers understand what happens after `git push`. Great products are shaped by their deployment constraints — the right caching strategy, a well-tuned reverse proxy, and a resilient CI/CD pipeline make all the difference.
               </p>
             </div>
 
             {/* What I Do dynamic highlight */}
-            <div className={`p-4 border rounded-xl transition-all duration-700 backdrop-blur-md ${scrollProgress > 0.38 ? "border-orange-500/30 bg-black/60 text-neutral-200 shadow-[6px_6px_0px_rgba(249,115,22,0.08)]" : "border-white/5 bg-white/[0.01] text-neutral-400"}`}>
-              <h4 className={`text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 ${scrollProgress > 0.38 ? "text-orange-400" : "text-neutral-400"}`}>WHAT I DO</h4>
+            <div ref={bento2Ref} className="p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400">
+              <h4 ref={bento2TitleRef} className="text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400">WHAT I DO</h4>
               <p className="text-sm leading-relaxed font-light">
                 Building full-stack web applications with React, Next.js, and Node.js — while managing the cloud infrastructure they live on. Currently configuring AWS EC2 instances, automating Jenkins pipelines, and hardening OpenVPN gateways at EaseInfra.
               </p>
@@ -227,12 +359,12 @@ const About = ({ scrollProgress = 0 }: { scrollProgress?: number }) => {
               <div className="relative border-l border-white/5 pl-6 ml-2 flex flex-col gap-8">
                 
                 {/* Job 1: EaseInfra */}
-                <div className={`relative transition-all duration-700 p-4 rounded-xl backdrop-blur-md border ${scrollProgress > 0.58 ? "bg-white/[0.02] border-orange-500/40 shadow-[4px_4px_0px_rgba(249,115,22,0.08)]" : "bg-white/[0.01] border-white/5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)]"}`}>
-                  <div className={`absolute -left-[31px] top-5.5 w-4 h-4 rounded-full border-2 bg-black transition-all duration-500 ${scrollProgress > 0.58 ? "border-orange-500 scale-110" : "border-neutral-700"}`} />
+                <div ref={timelineCardRef} className="relative transition-all duration-700 p-4 rounded-xl backdrop-blur-md border bg-white/[0.01] border-white/5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)]">
+                  <div ref={timelineDotRef} className="absolute -left-[31px] top-5.5 w-4 h-4 rounded-full border-2 bg-black transition-all duration-500 border-neutral-700" />
                   <span className="text-[10px] font-medium text-neutral-400 tracking-wider">
                     DEC 2025 – PRESENT · IN-OFFICE
                   </span>
-                  <h4 className={`font-author text-lg font-semibold mt-1 transition-colors duration-500 ${scrollProgress > 0.58 ? "text-orange-400" : "text-white"}`}>
+                  <h4 ref={timelineTitleRef} className="font-author text-lg font-semibold mt-1 transition-colors duration-500 text-white">
                     IT Intern
                   </h4>
                   <p className="text-xs font-semibold text-orange-400 tracking-wide">
@@ -256,7 +388,7 @@ const About = ({ scrollProgress = 0 }: { scrollProgress?: number }) => {
                 <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2" />
                 ACHIEVEMENTS
               </h3>
-              <div className={`border p-5 relative group transition-all duration-700 rounded-xl backdrop-blur-md ${scrollProgress > 0.65 ? "border-orange-500/40 bg-white/[0.02] shadow-[6px_6px_0px_rgba(249,115,22,0.08)] text-white" : "border-white/5 bg-white/[0.01] text-neutral-400"}`}>
+              <div ref={achievementsCardRef} className="border p-5 relative group transition-all duration-700 rounded-xl backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400">
                 <span className="text-[10px] font-medium text-neutral-400 tracking-wider block">
                   IIT JANAKPURI · HACKATHON WINNER
                 </span>
@@ -318,14 +450,11 @@ const About = ({ scrollProgress = 0 }: { scrollProgress?: number }) => {
               RESUME
             </h3>
 
-            {/* Resume image card â€” click to expand lightbox */}
+            {/* Resume image card — click to expand lightbox */}
             <button
+              ref={resumeCardRef}
               onClick={() => setResumeOpen(true)}
-              className={`group relative w-full rounded-xl overflow-hidden border transition-all duration-700 text-left ${
-                scrollProgress > 0.72
-                  ? "border-orange-500/40 shadow-[12px_12px_0px_rgba(249,115,22,0.08)]"
-                  : "border-white/5 shadow-[12px_12px_0px_rgba(0,0,0,0.2)]"
-              } hover:border-orange-500/50 hover:shadow-[0_12px_48px_rgba(249,115,22,0.15)] hover:scale-[1.01] cursor-pointer`}
+              className="group relative w-full rounded-xl overflow-hidden border transition-all duration-700 text-left border-white/5 shadow-[12px_12px_0px_rgba(0,0,0,0.2)] hover:border-orange-500/50 hover:shadow-[0_12px_48px_rgba(249,115,22,0.15)] hover:scale-[1.01] cursor-pointer"
               aria-label="View full resume"
             >
               <Image

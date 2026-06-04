@@ -370,9 +370,70 @@ const TelemetryMesh = () => {
             </form>
           </div>
 
+          {/* CELL 2: Core Metrics Orb (col-span-4) */}
+          <div className="telemetry-bento-cell md:col-span-4 border border-white/[0.08] rounded-2xl bg-[#0a0a0a] p-5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] flex flex-col h-[280px] overflow-hidden">
+            <span className="text-[8px] font-mono text-neutral-600 tracking-[0.25em] uppercase font-medium mb-3 select-none">
+              MATRIX // CORE ORBITAL LOAD
+            </span>
+            <div className="flex-1 flex items-center justify-center relative">
+              <svg className="w-28 h-28" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
+                <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
+                <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
+                
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(249,115,22,0.15)" strokeWidth="1.5"
+                        strokeDasharray="251" strokeDashoffset="140" className="animate-[spin_10s_linear_infinite]" style={{ transformOrigin: "50% 50%" }} />
+                <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(251,191,36,0.2)" strokeWidth="1.5"
+                        strokeDasharray="188" strokeDashoffset="65" className="animate-[spin_5s_linear_infinite_reverse]" style={{ transformOrigin: "50% 50%" }} />
+                <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(249,115,22,0.3)" strokeWidth="2"
+                        strokeDasharray="125" strokeDashoffset="35" className="animate-[spin_2.5s_linear_infinite]" style={{ transformOrigin: "50% 50%" }} />
+                
+                <circle cx="50" cy="50" r="3.5" fill="#f97316" className="animate-pulse" />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center font-mono select-none">
+                <span className="text-[12px] text-white font-bold mt-1">48.2%</span>
+                <span className="text-[7px] text-neutral-500 uppercase tracking-widest mt-0.5">SYS MEM LOAD</span>
+              </div>
+            </div>
+            <div className="flex justify-between font-mono text-[8px] text-neutral-500 pt-2.5 border-t border-white/[0.04] select-none">
+              <span>CORES // 8 ACTIVE</span>
+              <span className="text-orange-400">THREAD SECURE</span>
+            </div>
+          </div>
 
+          {/* CELL 3: AWS Node Telemetry (col-span-8) */}
+          <div className="telemetry-bento-cell md:col-span-8 border border-white/[0.08] rounded-2xl bg-[#0a0a0a] p-5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] flex flex-col h-[280px] overflow-hidden">
+            <div className="flex items-center justify-between mb-4 select-none">
+              <span className="text-[8px] font-mono text-neutral-600 tracking-[0.25em] uppercase font-medium">
+                AWS // TOPOLOGY PORT MATRIX
+              </span>
+              <span className="px-2 py-0.5 rounded border border-green-500/20 bg-green-500/5 text-[7px] font-mono text-green-400 uppercase tracking-wider">
+                ACTIVE STATE
+              </span>
+            </div>
+            
+            <div className="flex-1 grid grid-cols-2 gap-3 font-mono text-[9px] text-neutral-400 select-none">
+              {[
+                { label: "JENKINS RUNNERS", status: "ONLINE", value: "3/3 EXEC IDLE", color: "text-green-400" },
+                { label: "OPENVPN GATEWAY", status: "ESTABLISHED", value: "14.2 ms LATENCY", color: "text-green-400" },
+                { label: "DOCKER RUNNERS", status: "SANDBOXED", value: "12 CONTAINERS", color: "text-orange-400" },
+                { label: "DB GATE QUERY", status: "OPTIMIZED", value: "PORT 5432 (PG)", color: "text-orange-400" }
+              ].map(node => (
+                <div key={node.label} className="border border-white/[0.04] bg-white/[0.01] p-3 rounded-lg flex flex-col justify-between hover:border-orange-500/25 transition-colors duration-300">
+                  <span className="text-neutral-500 text-[8px] uppercase tracking-wider">{node.label}</span>
+                  <div className="flex items-end justify-between mt-2">
+                    <span className="text-white text-[10px] font-semibold">{node.value}</span>
+                    <span className={`text-[7px] font-bold ${node.color}`}>{node.status}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-
+            <div className="flex items-center justify-between font-mono text-[7px] text-neutral-500 pt-3 border-t border-white/[0.04] mt-2 select-none">
+              <span>VPN_ENC // AES_256_CBC</span>
+              <span>Uptime: 99.982%</span>
+            </div>
+          </div>
 
         </div>
 

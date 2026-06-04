@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect } from "react";
 import Lenis from "lenis";
@@ -9,8 +9,8 @@ const SmoothScroll = () => {
 
     // Initialize Lenis smooth scroll engine
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Fast start, slow exponential ease out
+      duration: 1.5,
+      easing: (t) => 1 - Math.pow(1 - t, 4), // Premium quartic ease-out for smooth inertia scroll
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,

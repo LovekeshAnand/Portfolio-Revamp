@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 
@@ -23,7 +23,7 @@ const TextMarquee = () => {
       {/* Marquee sliding track container */}
       <div className="flex whitespace-nowrap overflow-hidden">
         {/* Track 1 */}
-        <div className="flex animate-[marquee_28s_linear_infinite] gap-8 shrink-0 min-w-full justify-around items-center">
+        <div className="flex animate-[marquee_36s_linear_infinite] gap-8 shrink-0 min-w-full justify-around items-center">
           {words.map((word, idx) => (
             <div key={`t1-${idx}`} className="flex items-center gap-8 font-mono text-[9px] md:text-[10px] text-neutral-400 font-bold uppercase tracking-[0.25em]">
               <span>{word}</span>
@@ -33,7 +33,7 @@ const TextMarquee = () => {
         </div>
 
         {/* Track 2 (Seamless loop replica) */}
-        <div className="flex animate-[marquee_28s_linear_infinite] gap-8 shrink-0 min-w-full justify-around items-center" aria-hidden="true">
+        <div className="flex animate-[marquee_36s_linear_infinite] gap-8 shrink-0 min-w-full justify-around items-center" aria-hidden="true">
           {words.map((word, idx) => (
             <div key={`t2-${idx}`} className="flex items-center gap-8 font-mono text-[9px] md:text-[10px] text-neutral-400 font-bold uppercase tracking-[0.25em]">
               <span>{word}</span>

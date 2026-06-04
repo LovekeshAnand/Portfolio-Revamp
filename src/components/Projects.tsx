@@ -93,24 +93,24 @@ const Projects = () => {
     // factor 0.1 = silky; 0.2 = snappy
     const raw = rawRef.current;
     const prev = smoothRef.current;
-    const next = Math.abs(raw - prev) < 0.00005 ? raw : prev + (raw - prev) * 0.12;
+    const next = Math.abs(raw - prev) < 0.00005 ? raw : prev + (raw - prev) * 0.07; // Slowed down from 0.12 for premium weight/inertia
     smoothRef.current = next;
 
     const P = next;
 
-    /* ── Title: enters 0.00–0.22, exits 0.38–0.55 ── */
-    const tIn  = ease(remap(P, 0.00, 0.22));
-    const tOut = ease(remap(P, 0.38, 0.55));
-    const tOp  = P < 0.38 ? tIn : clamp01(1 - tOut);
-    const tY   = P < 0.38 ? 70 * (1 - tIn) : -(50 * tOut);
+    /* ── Title: enters 0.00–0.18, exits 0.30–0.45 ── */
+    const tIn  = ease(remap(P, 0.00, 0.18));
+    const tOut = ease(remap(P, 0.30, 0.45));
+    const tOp  = P < 0.30 ? tIn : clamp01(1 - tOut);
+    const tY   = P < 0.30 ? 70 * (1 - tIn) : -(50 * tOut);
     if (titleRef.current) {
       titleRef.current.style.opacity = String(tOp);
       titleRef.current.style.transform = `translateY(${tY}px)`;
     }
 
-    /* ── Laptop: enters 0.18–0.42 vertically, shifts left 0.38–0.60 ── */
-    const lIn    = ease(remap(P, 0.18, 0.42));
-    const lShift = ease(remap(P, 0.38, 0.60));
+    /* ── Laptop: enters 0.15–0.35 vertically, shifts left 0.30–0.48 ── */
+    const lIn    = ease(remap(P, 0.15, 0.35));
+    const lShift = ease(remap(P, 0.30, 0.48));
     const lY     = 80 * (1 - lIn);
     const lX     = 25 * (1 - lShift); // 25%→0%: centers 8-col in 12-col grid
     if (laptopRef.current) {
@@ -118,16 +118,16 @@ const Projects = () => {
       laptopRef.current.style.transform = `translateY(${lY}px) translateX(${lX}%)`;
     }
 
-    /* ── Sidebar: enters 0.48–0.65 ── */
-    const sIn = ease(remap(P, 0.48, 0.65));
+    /* ── Sidebar: enters 0.38–0.48 ── */
+    const sIn = ease(remap(P, 0.38, 0.48));
     if (sidebarRef.current) {
       sidebarRef.current.style.opacity = String(sIn);
       sidebarRef.current.style.transform = `translateX(${55 * (1 - sIn)}px)`;
     }
 
     /* ── Laptop screens ── */
-    const nyayaReveal   = P >= 0.60;
-    const serviceReveal = P >= 0.80;
+    const nyayaReveal   = P >= 0.48;
+    const serviceReveal = P >= 0.74;
     if (screen0Ref.current) screen0Ref.current.style.opacity = nyayaReveal ? "0" : "1";
     if (screen1Ref.current)
       screen1Ref.current.style.clipPath = nyayaReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
@@ -135,15 +135,15 @@ const Projects = () => {
       screen2Ref.current.style.clipPath = serviceReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
 
     /* ── Progress bars ── */
-    const b0 = ease(clamp01(remap(P, 0.00, 0.60)));
-    const b1 = ease(remap(P, 0.60, 0.80));
-    const b2 = ease(remap(P, 0.80, 1.00));
+    const b0 = ease(clamp01(remap(P, 0.00, 0.48)));
+    const b1 = ease(remap(P, 0.48, 0.74));
+    const b2 = ease(remap(P, 0.74, 1.00));
     if (bar0Ref.current) bar0Ref.current.style.transform = `scaleX(${b0})`;
     if (bar1Ref.current) bar1Ref.current.style.transform = `scaleX(${b1})`;
     if (bar2Ref.current) bar2Ref.current.style.transform = `scaleX(${b2})`;
 
     /* ── Active project card (discrete state — minimal re-render) ── */
-    const phase = P >= 0.80 ? 2 : P >= 0.60 ? 1 : 0;
+    const phase = P >= 0.74 ? 2 : P >= 0.48 ? 1 : 0;
     if (phase !== prevPhaseRef.current) {
       prevPhaseRef.current = phase;
       setActiveProject(phase);
@@ -226,7 +226,7 @@ const Projects = () => {
   /* ─── DESKTOP ─────────────────────────────────────────────────────────────── */
   return (
     <div id="projects" ref={containerRef}
-      className="relative h-[500vh] bg-transparent text-white border-t border-white/5">
+      className="relative h-[650vh] bg-transparent text-white border-t border-white/5">
 
       <section className="sticky top-0 h-screen w-full flex items-center overflow-hidden px-12 xl:px-24">
 
