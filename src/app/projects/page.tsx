@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import ProjectsPageClient from "@/components/ProjectsPageClient";
+import ProjectsPageClient from "@/components/pages/ProjectsPageClient";
 
 export const metadata: Metadata = {
   title: "Projects",
