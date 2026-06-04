@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Blog | Lovekesh Anand",
     description: "Technical insights and deep-dives into database performance, cloud topology, secure networking, and systems engineering by Lovekesh Anand.",
-    url: "https://lovekeshanand.com/blog",
+    url: "https://lovekesh-builds.vercel.app/blog",
     images: [
       {
         url: "/images/og-image.png",

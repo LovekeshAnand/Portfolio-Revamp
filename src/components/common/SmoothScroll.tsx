@@ -7,10 +7,20 @@ const SmoothScroll = () => {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Initialize Lenis smooth scroll engine
+    // Detect touch/mobile devices — Lenis smooth scroll is expensive on mobile
+    // and fights with the native momentum scroll, causing jank.
+    // On touch devices, native scroll is already smooth; skip Lenis entirely.
+    const isTouchDevice =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isTouchDevice) return; // Native scroll on mobile — much faster
+
+    // Initialize Lenis smooth scroll engine — desktop only
     const lenis = new Lenis({
       duration: 1.5,
-      easing: (t) => 1 - Math.pow(1 - t, 4), // Premium quartic ease-out for smooth inertia scroll
+      easing: (t) => 1 - Math.pow(1 - t, 4),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
@@ -19,14 +29,12 @@ const SmoothScroll = () => {
 
     let animationFrameId: number;
 
-    // Native requestAnimationFrame loop with correct browser timestamps
     const raf = (time: number) => {
       lenis.raf(time);
       animationFrameId = requestAnimationFrame(raf);
     };
     animationFrameId = requestAnimationFrame(raf);
 
-    // Call resize on resize events
     const handleResize = () => {
       lenis.resize();
     };
@@ -39,10 +47,8 @@ const SmoothScroll = () => {
       img.addEventListener("load", handleResize);
     });
 
-    // Discrete initial timeouts to ensure layout is correctly measured after hydration/load
     const t1 = setTimeout(handleResize, 500);
     const t2 = setTimeout(handleResize, 1500);
-    const t3 = setTimeout(handleResize, 3000);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -53,13 +59,11 @@ const SmoothScroll = () => {
       });
       clearTimeout(t1);
       clearTimeout(t2);
-      clearTimeout(t3);
       lenis.destroy();
     };
   }, []);
 
-  return null; // Side-effect only, no DOM footprint
+  return null;
 };
 
 export default SmoothScroll;
-

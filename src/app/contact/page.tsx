@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Contact | Lovekesh Anand",
     description: "Secure a direct channel connection with Lovekesh Anand. Dispatch messages, establish telemetry links, or secure a systems contract handshake.",
-    url: "https://lovekeshanand.com/contact",
+    url: "https://lovekesh-builds.vercel.app/contact",
     images: [
       {
         url: "/images/og-image.png",

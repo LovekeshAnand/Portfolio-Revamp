@@ -177,8 +177,9 @@ body::before {
     linear-gradient(to bottom, rgba(249, 115, 22, 0.035) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(circle at center, black 65%, rgba(0, 0, 0, 0.15) 100%);
-  WebkitMaskImage: radial-gradient(circle at center, black 65%, rgba(0, 0, 0, 0.15) 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 65%, rgba(0, 0, 0, 0.15) 100%);
 }
+
 
 /* ─── Global scaling overrides to improve text legibility across the site ─── */
 [class*="text-[9px]"], .text-\[9px\] {
@@ -201,4 +202,71 @@ body::before {
 }
 [class*="text-lg"], .text-lg {
   font-size: 20px !important;
+}
+
+/* ─── Performance: isolate GPU-heavy elements (WebGL/canvas/shaders) ─── */
+canvas,
+[data-shader],
+.grain-gradient-canvas {
+  will-change: transform;
+  transform: translateZ(0);
+  contain: strict;
+  /* Prevent canvas from triggering main-thread layout during animation */
+  isolation: isolate;
+}
+
+/* ─── Scroll performance ─── */
+html {
+  /* Prevent scroll chaining on iOS — eliminates rubber-band lag */
+  overscroll-behavior: none;
+  /* Smooth scrolling for anchor links */
+  scroll-behavior: smooth;
+}
+
+/* Momentum scrolling on iOS */
+.overflow-y-auto,
+.overflow-auto,
+.overflow-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-action optimization: tell browser scroll areas don't need long-press */
+body {
+  touch-action: pan-y;
+}
+
+/* ─── Mobile font scale — bring sizes down for small screens ─── */
+@media (max-width: 640px) {
+  [class*="text-xs"], .text-xs {
+    font-size: 12.5px !important;
+  }
+  [class*="text-sm"], .text-sm {
+    font-size: 14px !important;
+  }
+  [class*="text-base"], .text-base {
+    font-size: 15px !important;
+  }
+  [class*="text-lg"], .text-lg {
+    font-size: 17px !important;
+  }
+}
+
+
+/* ─── Mobile: disable expensive backdrop-blur on low-end ─── */
+@media (max-width: 640px) and (hover: none) {
+  .backdrop-blur-md {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* ─── Prevent horizontal overflow on all viewports ─── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }

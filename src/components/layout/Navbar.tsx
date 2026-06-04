@@ -150,16 +150,8 @@ const Navbar = () => {
             className="flex flex-col gap-1.5 justify-center items-center w-6 h-6 outline-none focus:outline-none cursor-pointer"
             aria-label="Toggle Menu"
           >
-            <span 
-              className={`w-4.5 h-[1.5px] bg-white transition-all duration-300 ${
-                isOpen ? "rotate-45 translate-y-[3.5px]" : ""
-              }`} 
-            />
-            <span 
-              className={`w-4.5 h-[1.5px] bg-white transition-all duration-300 ${
-                isOpen ? "-rotate-45 -translate-y-[3.5px]" : ""
-              }`} 
-            />
+            <span className="w-4.5 h-[1.5px] bg-white" />
+            <span className="w-4.5 h-[1.5px] bg-white" />
           </button>
         </div>
 

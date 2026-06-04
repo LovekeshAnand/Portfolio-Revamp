@@ -159,10 +159,13 @@ const Footer = () => {
                 { label: "Experience", href: "/#experience" },
                 { label: "Projects", href: "/projects" },
                 { label: "Contact", href: "/contact" },
+                { label: "Sitemap", href: "/sitemap.xml", target: "_blank" },
               ].map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
+                  target={link.target}
+                  rel={link.target ? "noopener noreferrer" : undefined}
                   className="group flex items-center gap-2.5 text-base text-neutral-300 font-author hover:text-white transition-all duration-300 w-fit transform hover:translate-x-1"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-orange-500 group-hover:shadow-[0_0_8px_rgba(249,115,22,0.8)] transition-all duration-300" />
@@ -180,7 +183,7 @@ const Footer = () => {
             © 2026 Lovekesh Anand · All rights reserved
           </p>
           <p className="text-xs sm:text-sm font-mono tracking-widest uppercase text-neutral-600 select-none">
-            Built with Next.js &amp; ❤
+            Built by Lovekesh
           </p>
         </div>
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
@@ -101,30 +101,38 @@ const AnimatedGradientBackground: React.FC<AnimatedGradientBackgroundProps> = ({
     let animationFrame: number;
     let width = startingGap;
     let directionWidth = 1;
+    let lastTime = 0;
+    // Throttle to ~30fps on mobile/low-end, 60fps on desktop
+    const isMobileDevice = typeof window !== "undefined" && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    const targetInterval = isMobileDevice ? 33 : 16; // ms between frames
 
-    const animateGradient = () => {
-      if (width >= startingGap + breathingRange) directionWidth = -1;
-      if (width <= startingGap - breathingRange) directionWidth = 1;
+    const animateGradient = (timestamp: number) => {
+      const elapsed = timestamp - lastTime;
+      if (elapsed >= targetInterval) {
+        lastTime = timestamp - (elapsed % targetInterval);
 
-      if (!Breathing) directionWidth = 0;
-      width += directionWidth * animationSpeed;
+        if (width >= startingGap + breathingRange) directionWidth = -1;
+        if (width <= startingGap - breathingRange) directionWidth = 1;
 
-      const gradientStopsString = gradientStops
-        .map((stop, index) => `${gradientColors[index]} ${stop}%`)
-        .join(", ");
+        if (!Breathing) directionWidth = 0;
+        width += directionWidth * animationSpeed;
 
-      const gradient = `radial-gradient(${width}% ${width + topOffset}% at 50% 35%, ${gradientStopsString})`;
+        const gradientStopsString = gradientStops
+          .map((stop, index) => `${gradientColors[index]} ${stop}%`)
+          .join(", ");
 
-      if (containerRef.current) {
-        containerRef.current.style.background = gradient;
+        const gradient = `radial-gradient(${width}% ${width + topOffset}% at 50% 35%, ${gradientStopsString})`;
+
+        if (containerRef.current) {
+          containerRef.current.style.background = gradient;
+        }
       }
-
       animationFrame = requestAnimationFrame(animateGradient);
     };
 
     animationFrame = requestAnimationFrame(animateGradient);
 
-    return () => cancelAnimationFrame(animationFrame); // Cleanup animation
+    return () => cancelAnimationFrame(animationFrame);
   }, [startingGap, Breathing, gradientColors, gradientStops, animationSpeed, breathingRange, topOffset]);
 
   return (
@@ -146,7 +154,7 @@ const AnimatedGradientBackground: React.FC<AnimatedGradientBackgroundProps> = ({
     >
       <div
         ref={containerRef}
-        style={containerStyle}
+        style={{ ...containerStyle, willChange: "background", contain: "paint" }}
         className="absolute inset-0 transition-transform duration-1000 ease-out"
       />
     </motion.div>

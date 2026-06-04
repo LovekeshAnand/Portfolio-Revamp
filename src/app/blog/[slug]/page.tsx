@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getPostBySlug, blogPosts } from "@/utils/blogData";
@@ -23,6 +24,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const post = getPostBySlug(slug);
   if (!post) return {};
 
+  const ogImage = post.image ?? "/images/og-image.png";
+
   return {
     title: post.title,
     description: post.summary,
@@ -33,10 +36,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "article",
       title: `${post.title} | Lovekesh Anand`,
       description: post.summary,
-      url: `https://lovekeshanand.com/blog/${slug}`,
+      url: `https://lovekesh-builds.vercel.app/blog/${slug}`,
       images: [
         {
-          url: "/images/og-image.png",
+          url: ogImage,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -101,6 +104,22 @@ export default async function BlogPostDetailsPage({ params }: PageProps) {
               <span>READ DURATION // {post.readTime}</span>
             </div>
           </header>
+
+          {/* Hero Cover Image */}
+          {post.image && (
+            <div className="relative w-full h-72 md:h-96 rounded-xl overflow-hidden mb-10 -mt-2">
+              <Image
+                src={post.image}
+                alt={post.title}
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 768px) 100vw, 768px"
+                priority
+              />
+              {/* Thin bottom fade only — keeps image fully visible */}
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#070707] to-transparent" />
+            </div>
+          )}
 
           {/* Article HTML Content */}
           <div 

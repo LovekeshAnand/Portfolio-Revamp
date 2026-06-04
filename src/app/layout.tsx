@@ -23,7 +23,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lovekeshanand.com"),
+  metadataBase: new URL("https://lovekesh-builds.vercel.app"),
   title: {
     default: "Lovekesh Anand | Software Engineer & Systems Architect", // 53 characters
     template: "%s | Lovekesh Anand",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Lovekesh Anand | Software Engineer & Systems Architect",
     description: "Lovekesh Anand is a systems-focused software engineer and designer specializing in self-hosted legal AI pipelines, database tuning, and cloud topology.",
-    url: "https://lovekeshanand.com",
+    url: "https://lovekesh-builds.vercel.app",
     siteName: "Lovekesh Anand Portfolio",
     images: [
       {
@@ -90,14 +90,14 @@ export default function RootLayout({
       className={`${bebas.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <head>
-        {process.env.NEXT_PUBLIC_CLARITY_ID && (
+        {process.env.NEXT_CLARITY_PROJECT_ID && (
           <Script id="microsoft-clarity" strategy="afterInteractive">
             {`
               (function(c,l,a,r,i,t,y){
                   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window,document,"clarity","script","${process.env.NEXT_PUBLIC_CLARITY_ID}");
+              })(window,document,"clarity","script","${process.env.NEXT_CLARITY_PROJECT_ID}");
             `}
           </Script>
         )}

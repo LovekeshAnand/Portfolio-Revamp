@@ -5,115 +5,171 @@ export interface BlogPost {
   category: string;
   publishDate: string;
   readTime: string;
+  image?: string;
   contentHtml: string;
 }
 
 export const blogPosts: BlogPost[] = [
   {
-    slug: "achieving-sub-5ms-postgres-latency",
-    title: "Achieving Sub-5ms Postgres Query Latency: A Hardcore Indexing Guide",
-    summary: "How we refactored query plans and configured custom cache layers to optimize PostgreSQL throughput and memory profiles.",
-    category: "Databases & Performance",
-    publishDate: "MAY 15, 2026",
-    readTime: "8 MIN READ",
+    slug: "building-my-first-real-staging-environment",
+    title: "Building My First Real Staging Environment (And Everything That Went Wrong)",
+    summary: "A practical, hands-on account of building a real Linux staging environment from scratch — covering Docker, Jenkins, PM2, memory failures, swap space, and real deployment pipelines.",
+    category: "DevOps & Systems",
+    publishDate: "FEB 9, 2026",
+    readTime: "4 MIN READ",
+    image: "/images/blog-one.webp",
     contentHtml: `
-      <p>When query response latency spikes on production database systems, developers are quick to throw memory or cache hardware at the problem. However, the root issue is usually inefficient query planning and lack of indexing strategy. This guide breaks down the concrete steps we took to pull query response times down to under 5 milliseconds.</p>
+      <p>When I first heard the term <em>staging environment</em>, I assumed it was just another server where code is deployed before production. I quickly learned that this assumption was wrong.</p>
 
-      <h3>1. Analyzing the Query Plan (EXPLAIN ANALYZE)</h3>
-      <p>Before writing code, analyze how PostgreSQL scans tables. Running <code>EXPLAIN (ANALYZE, BUFFERS) SELECT ...</code> highlights structural bottlenecks:
+      <p>A real staging environment forces you to understand Linux internals, memory limits, automation, networking, security, and deployment workflows — all at once. This article is not a motivational story. It is a practical, hands-on guide based on real problems I faced while building a staging environment from scratch.</p>
+
+      <p>If you are a beginner and want to understand how real systems are built, this article is for you.</p>
+
+      <h3>What a Staging Environment Actually Is</h3>
+      <p>A staging environment is a production-like setup used to test real deployments safely. It behaves like production but is isolated so mistakes do not affect real users.</p>
+      <p>That means:</p>
       <ul>
-        <li><strong>Seq Scan (Sequential Scan):</strong> A full table scan. In database tables with millions of records, this is highly expensive and triggers heavy disk reads.</li>
-        <li><strong>Index Scan:</strong> Scanning the index tree to locate matching records. Much faster, but can still trigger random disk I/O.</li>
-        <li><strong>Index Only Scan:</strong> The query only requests columns covered by the index itself, avoiding table data block lookups entirely. This is the optimal path.</li>
+        <li>Code is deployed in a repeatable way</li>
+        <li>Services restart automatically</li>
+        <li>Failures are handled, not ignored</li>
+        <li>Access is controlled and secure</li>
+        <li>Automation replaces manual work</li>
       </ul>
-      </p>
+      <p>I decided to build everything from zero on a fresh Linux server instead of relying on prebuilt scripts.</p>
 
-      <h3>2. Composite Indexes and Column Order</h3>
-      <p>If queries filter across multiple columns (e.g., <code>tenant_id</code> and <code>status</code>), a single-column index is insufficient. PostgreSQL will perform bitmap index merges, which incurs overhead. Instead, build a composite index:</p>
-      <pre><code>CREATE INDEX idx_orders_tenant_status ON orders (tenant_id, status);</code></pre>
-      <p><strong>Crucial Rule:</strong> Place the high-cardinality columns (columns with most unique values) first, and equality filter columns before inequality/range filters (like timestamps).</p>
+      <h3>Step 1: Preparing the Server Properly</h3>
+      <p>Before installing anything, I updated the system. Skipping this step often causes dependency issues later.</p>
+      <pre><code>sudo yum update -y</code></pre>
 
-      <h3>3. Partial (Filtered) Indexes</h3>
-      <p>If you only query active records, don't index the entire table. Indexing inactive archive data wastes cache memory. Build a partial index instead:</p>
-      <pre><code>CREATE INDEX idx_users_active_sessions ON users (session_token) WHERE is_active = true;</code></pre>
-      <p>This index is 80% smaller, fits entirely in RAM buffer pools, and achieves sub-1ms search times.</p>
+      <p><strong>Installing Docker</strong></p>
+      <p>Docker was used to isolate services and simplify management.</p>
+      <pre><code>sudo yum install docker -y
+sudo systemctl start docker
+sudo systemctl enable docker</code></pre>
+      <p>By default, Docker requires root access. To avoid constantly using <code>sudo</code>, I added the user to the Docker group.</p>
+      <pre><code>sudo usermod -aG docker ec2-user
+exit</code></pre>
+      <p>After logging back in, Docker commands worked normally.</p>
 
-      <h3>4. Cache Synchronization with Redis</h3>
-      <p>For high-frequency static reads, bypass the database query entirely by integrating an automated Redis caching layer. We engineered a write-through cache coordinator that updates Redis keys whenever a write action is committed, guaranteeing sub-1ms read times for active caches and shielding the database from redundant queries.</p>
-    `
-  },
-  {
-    slug: "hardening-openvpn-gateways-zero-trust",
-    title: "Hardening OpenVPN Gateways: Zero-Trust Security for Infrastructure Teams",
-    summary: "Step-by-step design of custom secure administration gateways, certificate management, and firewall constraints.",
-    category: "Cloud Security",
-    publishDate: "APRIL 28, 2026",
-    readTime: "12 MIN READ",
-    contentHtml: `
-      <p>Managing direct access to production VPC nodes poses serious security risks. Infrastructure teams need remote network entry, but standard VPN defaults leave servers vulnerable to lateral movement. This article details how we designed and secured a zero-trust gateway layout using OpenVPN and systemd firewalls.</p>
+      <h3>Step 2: Setting Up Git Access the Right Way</h3>
+      <p>Automation fails if Git asks for passwords. SSH-based authentication is mandatory.</p>
+      <pre><code>ssh-keygen -t ed25519 -C "automation-key"</code></pre>
+      <p>The public key was copied and added to the Git provider.</p>
+      <pre><code>cat ~/.ssh/id_ed25519.pub</code></pre>
+      <p>To verify access:</p>
+      <pre><code>ssh -T git@bitbucket.org</code></pre>
+      <p>If this step fails, nothing else will work reliably.</p>
 
-      <h3>1. Hardening Cryptographic Ciphers</h3>
-      <p>Default OpenVPN configurations often support deprecated handshake algorithms and weak ciphers. Edit the server configuration (<code>server.conf</code>) to restrict protocol parameters to secure standards:</p>
-      <pre><code># Cryptographic profile
-cipher AES-256-GCM
-auth SHA512
-tls-version-min 1.3
-tls-cipher TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384</code></pre>
-      <p>This disables legacy TLS versions and legacy CBC blocks, enforcing modern authenticated encryption (AEAD).</p>
+      <h3>Step 3: Installing Node.js and Process Management</h3>
+      <p>A stable Node.js version was installed:</p>
+      <pre><code>curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+sudo yum install -y nodejs</code></pre>
+      <p>Then I installed a process manager to keep applications running after crashes or reboots.</p>
+      <pre><code>sudo npm install -g pm2</code></pre>
+      <p>To make processes start automatically on reboot:</p>
+      <pre><code>pm2 startup
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ec2-user</code></pre>
+      <p>At this point, the system looked ready. That confidence did not last long.</p>
 
-      <h3>2. Implementing Client Isolation</h3>
-      <p>By default, VPN clients can communicate with other connected clients. Disable this by removing the <code>client-to-client</code> directive from the configuration, and drop client privileges immediately after startup using non-root parameters:</p>
-      <pre><code>user nobody
-group nogroup</code></pre>
+      <h3>Step 4: Running Into Memory Failures</h3>
+      <p>The first application build failed. The second one failed too. Then the server became unresponsive.</p>
+      <p>The issue was not the code — it was memory.</p>
+      <p>Checking memory usage:</p>
+      <pre><code>free -h</code></pre>
+      <p>The system did not have enough RAM to handle build processes.</p>
 
-      <h3>3. Dynamic Firewall Routing</h3>
-      <p>To enforce zero-trust access, connected users should only reach specific ports on target nodes. Configure <code>iptables</code> to drop all traffic from the VPN subnet by default, and only allow access on strict destination ports:</p>
-      <pre><code># Drop all client cross-forwarding
-iptables -A FORWARD -s 10.8.0.0/24 -j DROP
+      <p><strong>Adding Swap Memory</strong></p>
+      <p>Creating swap space stabilized the system.</p>
+      <pre><code>sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile</code></pre>
+      <p>Later, the swap was increased:</p>
+      <pre><code>sudo swapoff /swapfile
+sudo dd if=/dev/zero of=/swapfile bs=1M count=4096
+sudo mkswap /swapfile
+sudo swapon /swapfile</code></pre>
+      <p>To make swap persistent:</p>
+      <pre><code>echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab</code></pre>
+      <p>After this, builds stopped crashing unexpectedly.</p>
 
-# Explicitly allow administrative SSH access to the bastion node only
-iptables -A FORWARD -s 10.8.0.5 -d 10.0.1.10 -p tcp --dport 22 -j ACCEPT</code></pre>
-      <p>Enforce these constraints inside Jenkins automation runner scripts for automated, dynamic access policies.</p>
-    `
-  },
-  {
-    slug: "building-self-hosted-offline-ai-pipelines",
-    title: "Building a Self-Hosted Offline AI Pipeline with llama.cpp and FastAPI",
-    summary: "Configuring memory-mapped offline LLM models, batch size optimizations, and PyMuPDF document ingestion under strict CPU limits.",
-    category: "AI & Systems Integration",
-    publishDate: "MARCH 12, 2026",
-    readTime: "10 MIN READ",
-    contentHtml: `
-      <p>For data-sensitive environments (such as legal platforms or clinical applications), using public LLM API calls is prohibited due to strict regulatory compliance rules. This article documents our architecture for self-hosting GGUF language models offline using <code>llama.cpp</code>, compiled with CPU vector acceleration (AVX2), and served via a FastAPI backend wrapper.</p>
+      <h3>Step 5: Deploying Code in a Repeatable Way</h3>
+      <p>Instead of running applications manually, I followed a strict workflow.</p>
+      <pre><code>git clone &lt;repository-url&gt;
+cd project
+npm install</code></pre>
+      <p>For memory-heavy builds:</p>
+      <pre><code>NODE_OPTIONS="--max-old-space-size=3072" npm run build</code></pre>
+      <p>Running the application with process management:</p>
+      <pre><code>pm2 start &lt;start-command&gt; --name project-name
+pm2 save</code></pre>
+      <p>Now, even if the server rebooted, everything came back automatically.</p>
 
-      <h3>1. Quantization Profiles (GGUF)</h3>
-      <p>Running LLM models in production on commercial CPU hardware requires reducing their memory footprints. We used weight quantization to compress the models:
+      <h3>Step 6: Running the Database Safely</h3>
+      <p>The database was isolated using Docker to avoid accidental exposure and simplify recovery.</p>
+      <pre><code>docker run -d \\
+  --name database \\
+  -v data_volume:/data/db \\
+  --restart unless-stopped \\
+  mongo:7</code></pre>
+      <p>This ensured persistent data storage, automatic restarts, and clean separation from the host system.</p>
+
+      <h3>Step 7: Automating Deployments with Jenkins</h3>
+      <p>Initially, Jenkins was installed directly on the system. That approach failed due to permission and dependency issues.</p>
+      <p>Running Jenkins inside Docker worked far better.</p>
+      <pre><code>docker volume create jenkins_home
+docker run -d \\
+  --name jenkins \\
+  -v jenkins_home:/var/jenkins_home \\
+  -v /var/run/docker.sock:/var/run/docker.sock \\
+  -v $(which docker):/usr/bin/docker \\
+  jenkins/jenkins:lts</code></pre>
+      <p>Jenkins failed again — this time due to Docker socket permissions.</p>
+      <pre><code>sudo chmod 666 /var/run/docker.sock</code></pre>
+      <p>Then Jenkins started correctly. To retrieve the initial admin password:</p>
+      <pre><code>docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword</code></pre>
+
+      <h3>Step 8: Writing Real Deployment Pipelines</h3>
+      <p>Each automated deployment followed the same logic: connect to the server via SSH, navigate to the project directory, switch to the correct branch, pull latest changes, install dependencies, build with memory limits, and restart the process.</p>
+      <p>Core commands used inside pipelines:</p>
+      <pre><code>git checkout branch-name
+git pull origin branch-name
+npm install
+NODE_OPTIONS="--max-old-space-size=2048" npm run build
+pm2 restart project-name</code></pre>
+      <p>Every step was logged. No hidden magic.</p>
+
+      <h3>Step 9: Debugging Real Failures</h3>
+      <p>Some real problems I encountered:</p>
       <ul>
-        <li><strong>FP16:</strong> High accuracy but requires 16GB+ VRAM for a 7B model.</li>
-        <li><strong>Q4_K_M (4-bit quantization):</strong> Reduces the Llama 7B model size from 14GB to ~4.1GB, allowing it to fit into standard host RAM, with negligible perplexity loss.</li>
+        <li><strong>Builds failing randomly</strong> — Fixed by increasing swap and Node heap size.</li>
+        <li><strong>Applications not restarting</strong> — Checked process names using <code>pm2 status</code>.</li>
+        <li><strong>Silent pipeline failures</strong> — Fixed by stopping scripts on error with <code>set -e</code>.</li>
+        <li><strong>Server freezing under load</strong> — Fixed by expanding disk space:</li>
       </ul>
-      </p>
+      <pre><code>lsblk
+sudo growpart /dev/nvme0n1 1
+sudo xfs_growfs /</code></pre>
+      <p>Each failure improved my understanding of system behavior.</p>
 
-      <h3>2. Optimizing llama.cpp compilation</h3>
-      <p>Build <code>llama.cpp</code> from source to match the host machine's architecture, enabling AVX2 instruction sets for fast matrix multiplication:</p>
-      <pre><code># Compile with optimization flags
-make CXXFLAGS="-mavx2 -mfma" -j8</code></pre>
-      <p>This optimization improves token generation speed by 2.4x compared to unoptimized generic compilation binary streams.</p>
+      <h3>What This Project Taught Me</h3>
+      <p>This setup taught me more than any tutorial ever could. I learned why automation is essential, how memory affects builds, how Linux behaves under stress, how real deployments work, and how to debug instead of guessing.</p>
+      <p>A staging environment is not about tools. It is about thinking like an engineer.</p>
 
-      <h3>3. FastAPI Async Processing</h3>
-      <p>Since CPU-bound LLM generation blocks the Python main thread, wrapping the generation call directly in an async endpoint would degrade server throughput. Instead, delegate LLM generation tasks to a background execution pool using a worker queue:</p>
-      <pre><code>from concurrent.futures import ThreadPoolExecutor
-executor = ThreadPoolExecutor(max_workers=2)
-
-@app.post("/generate")
-async def generate_text(prompt: str):
-    loop = asyncio.get_running_loop()
-    response = await loop.run_in_executor(executor, run_llm_generation, prompt)
-    return {"response": response}</code></pre>
-      <p>This keeps FastAPI's event loop fully responsive, handling incoming API calls smoothly while threads crunch numbers in the background.</p>
+      <h3>Advice for Beginners</h3>
+      <p>If you are starting out:</p>
+      <ul>
+        <li>Do not blindly copy configurations</li>
+        <li>Monitor memory and disk usage</li>
+        <li>Read logs carefully</li>
+        <li>Automate repetitive work</li>
+        <li>Break things and fix them yourself</li>
+      </ul>
+      <p>That is how real learning happens.</p>
     `
   }
 ];
+
 export const getPostBySlug = (slug: string) => {
   return blogPosts.find(post => post.slug === slug);
 };
