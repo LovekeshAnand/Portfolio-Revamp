@@ -19,26 +19,26 @@ const projects: ProjectData[] = [
   {
     id: "nyaya-ai",
     index: "01",
-    category: "OFFLINE AI // SYSTEM INTEGRATION",
+    category: "OFFLINE AI / SYSTEM INTEGRATION",
     title: "NyayaAI",
     role: "Indian Legal Intelligence Platform",
     description:
       "A privacy-first, self-hosted legal drafting and document intelligence pipeline designed to operate 100% offline. Built defensively to support modern Indian legal codes (BNS, BNSS, BSA) with a custom OCR document ingestion pipeline.",
     tech: ["Python", "FastAPI", "llama.cpp", "SQLite", "PyMuPDF", "Tesseract OCR"],
-    linkText: "EXPLORE REPOSITORY // GITHUB",
+    linkText: "EXPLORE REPOSITORY / GITHUB",
     linkUrl: "https://github.com/LovekeshAnand/nyaya-ai",
     imageUrl: "/images/nyaya_ai.png",
   },
   {
     id: "service-flow",
     index: "02",
-    category: "FULL-STACK // WEB UTILITY",
+    category: "FULL-STACK / WEB UTILITY",
     title: "ServiceFlow",
     role: "Real-Time Priority Feedback Portal",
     description:
       "A robust client-facing issue tracker and priority management dashboard built to optimize QA cycles across staging instances. Integrates real-time state sync, high-efficiency caching, and automated email alerts on high-severity events.",
     tech: ["React.js", "Node.js", "Express.js", "MongoDB", "WebSockets", "Tailwind CSS"],
-    linkText: "LAUNCH APPLICATION // LIVE",
+    linkText: "LAUNCH APPLICATION / LIVE",
     linkUrl: "https://serviceflow-five.vercel.app/",
     imageUrl: "/images/serviceflow.png",
   },
@@ -98,19 +98,18 @@ const Projects = () => {
 
     const P = next;
 
-    /* ── Title: enters 0.00–0.18, exits 0.30–0.45 ── */
-    const tIn  = ease(remap(P, 0.00, 0.18));
-    const tOut = ease(remap(P, 0.30, 0.45));
-    const tOp  = P < 0.30 ? tIn : clamp01(1 - tOut);
-    const tY   = P < 0.30 ? 70 * (1 - tIn) : -(50 * tOut);
+    /* ── Title: starts visible, exits 0.00–0.15 ── */
+    const tOut = ease(remap(P, 0.00, 0.15));
+    const tOp  = clamp01(1 - tOut);
+    const tY   = -(50 * tOut);
     if (titleRef.current) {
       titleRef.current.style.opacity = String(tOp);
       titleRef.current.style.transform = `translateY(${tY}px)`;
     }
 
-    /* ── Laptop: enters 0.15–0.35 vertically, shifts left 0.30–0.48 ── */
-    const lIn    = ease(remap(P, 0.15, 0.35));
-    const lShift = ease(remap(P, 0.30, 0.48));
+    /* ── Laptop: enters 0.00–0.20 vertically, shifts left 0.10–0.25 ── */
+    const lIn    = ease(remap(P, 0.00, 0.20));
+    const lShift = ease(remap(P, 0.10, 0.25));
     const lY     = 80 * (1 - lIn);
     const lX     = 25 * (1 - lShift); // 25%→0%: centers 8-col in 12-col grid
     if (laptopRef.current) {
@@ -118,16 +117,16 @@ const Projects = () => {
       laptopRef.current.style.transform = `translateY(${lY}px) translateX(${lX}%)`;
     }
 
-    /* ── Sidebar: enters 0.38–0.48 ── */
-    const sIn = ease(remap(P, 0.38, 0.48));
+    /* ── Sidebar: enters 0.15–0.28 ── */
+    const sIn = ease(remap(P, 0.15, 0.28));
     if (sidebarRef.current) {
       sidebarRef.current.style.opacity = String(sIn);
       sidebarRef.current.style.transform = `translateX(${55 * (1 - sIn)}px)`;
     }
 
     /* ── Laptop screens ── */
-    const nyayaReveal   = P >= 0.48;
-    const serviceReveal = P >= 0.74;
+    const nyayaReveal   = P >= 0.25;
+    const serviceReveal = P >= 0.65;
     if (screen0Ref.current) screen0Ref.current.style.opacity = nyayaReveal ? "0" : "1";
     if (screen1Ref.current)
       screen1Ref.current.style.clipPath = nyayaReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
@@ -135,15 +134,15 @@ const Projects = () => {
       screen2Ref.current.style.clipPath = serviceReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
 
     /* ── Progress bars ── */
-    const b0 = ease(clamp01(remap(P, 0.00, 0.48)));
-    const b1 = ease(remap(P, 0.48, 0.74));
-    const b2 = ease(remap(P, 0.74, 1.00));
+    const b0 = ease(clamp01(remap(P, 0.00, 0.25)));
+    const b1 = ease(remap(P, 0.25, 0.65));
+    const b2 = ease(remap(P, 0.65, 1.00));
     if (bar0Ref.current) bar0Ref.current.style.transform = `scaleX(${b0})`;
     if (bar1Ref.current) bar1Ref.current.style.transform = `scaleX(${b1})`;
     if (bar2Ref.current) bar2Ref.current.style.transform = `scaleX(${b2})`;
 
     /* ── Active project card (discrete state — minimal re-render) ── */
-    const phase = P >= 0.74 ? 2 : P >= 0.48 ? 1 : 0;
+    const phase = P >= 0.65 ? 2 : P >= 0.25 ? 1 : 0;
     if (phase !== prevPhaseRef.current) {
       prevPhaseRef.current = phase;
       setActiveProject(phase);
@@ -186,7 +185,7 @@ const Projects = () => {
             <h2 className="font-author text-4xl md:text-5xl font-normal tracking-tight text-white">
               Selected <em className="italic font-serif text-orange-400">Projects</em>
             </h2>
-            <p className="font-author text-sm text-neutral-400 font-light mt-2 max-w-md">
+            <p className="font-author text-base text-neutral-400 font-light mt-2 max-w-md">
               A curation of high-performance backend pipelines and web applications built under tight resource limits.
             </p>
           </div>
@@ -199,20 +198,23 @@ const Projects = () => {
                   <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
                 </a>
                 <div className="mt-6">
-                  <span className="text-[10px] font-medium text-neutral-400 tracking-wider">
-                    {project.index} // {project.category}
+                  <span className="text-xs font-medium text-neutral-400 tracking-wider">
+                    {project.index} / {project.category}
                   </span>
                   <h3 className="font-author text-3xl font-normal text-white mt-1">{project.title}</h3>
                   <p className="text-xs font-medium text-orange-400 tracking-wide">{project.role}</p>
-                  <p className="font-author text-sm text-neutral-400 leading-relaxed mt-3 font-light">{project.description}</p>
+                  <p className="font-author text-sm md:text-base text-neutral-400 leading-relaxed mt-3 font-light">{project.description}</p>
                   <div className="flex flex-wrap gap-1.5 mt-4">
                     {project.tech.map((s) => (
-                      <span key={s} className="text-[9px] font-mono font-medium text-neutral-400 border border-white/5 bg-white/[0.01] px-2 py-0.5">{s}</span>
+                      <span key={s} className="text-[11px] font-mono font-medium text-neutral-400 border border-white/5 bg-white/[0.01] px-2 py-0.5">{s}</span>
                     ))}
                   </div>
                   <a href={project.linkUrl} target="_blank" rel="noopener noreferrer"
-                     className="inline-block mt-5 text-xs font-medium text-orange-400 hover:underline tracking-wider uppercase">
-                    {project.linkText} ↗
+                     className="inline-flex items-center gap-1 mt-5 text-xs font-medium text-orange-400 hover:underline tracking-wider uppercase group">
+                    {project.linkText}
+                    <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
+                    </svg>
                   </a>
                 </div>
               </div>
@@ -226,7 +228,7 @@ const Projects = () => {
   /* ─── DESKTOP ─────────────────────────────────────────────────────────────── */
   return (
     <div id="projects" ref={containerRef}
-      className="relative h-[650vh] bg-transparent text-white border-t border-white/5">
+      className="relative h-[300vh] bg-transparent text-white border-t border-white/5">
 
       <section className="sticky top-0 h-screen w-full flex items-center overflow-hidden px-12 xl:px-24">
 
@@ -275,10 +277,10 @@ const Projects = () => {
                   }} />
                   <div className="relative z-10 flex flex-col items-center gap-4">
                     <div className="w-14 h-14 rounded-full border border-orange-500/25 flex items-center justify-center bg-orange-500/5 animate-pulse">
-                      <span className="font-mono text-[9px] text-orange-400 font-medium">SYSTEMS</span>
+                      <span className="font-mono text-[11px] text-orange-400 font-medium">SYSTEMS</span>
                     </div>
-                    <div className="font-mono text-[8px] text-neutral-600 tracking-[0.3em] uppercase">
-                      Lovekesh Anand // Project Core
+                    <div className="font-mono text-[10px] text-neutral-600 tracking-[0.3em] uppercase">
+                      Lovekesh Anand / Project Core
                     </div>
                   </div>
                 </div>
@@ -317,19 +319,19 @@ const Projects = () => {
           {/* Sidebar — col-span-4 */}
           <div
             ref={sidebarRef}
-            className="col-span-4 h-[490px] flex flex-col justify-between p-8 bg-black/60 border border-white/5 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+            className="col-span-4 h-[560px] flex flex-col justify-between px-8 py-6 bg-black/60 border border-white/5 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
             style={{ opacity: 0, willChange: "transform, opacity" }}
           >
             {/* Index */}
             <div className="font-mono text-xs font-medium text-neutral-400 tracking-[0.2em] uppercase">
-              INDEX //{" "}
+              INDEX /{" "}
               <span className="text-orange-500 font-semibold">
                 {activeProject === 0 ? "00" : `0${activeProject}`}
               </span>
             </div>
 
             {/* Cards */}
-            <div className="relative flex-1 mt-6 overflow-hidden">
+            <div className="relative flex-1 mt-4 overflow-hidden">
 
               {/* Card 0 */}
               <div className="absolute inset-0 flex flex-col justify-center"
@@ -343,7 +345,7 @@ const Projects = () => {
                 <h2 className="font-author text-4xl xl:text-5xl font-normal tracking-tight text-white leading-none">
                   Selected <br /><em className="italic font-serif text-orange-400">Projects</em>
                 </h2>
-                <p className="font-author text-sm text-neutral-400 font-light mt-4 leading-relaxed">
+                <p className="font-author text-base text-neutral-400 font-light mt-4 leading-relaxed">
                   Scroll to review bespoke systems engineering codebases designed under hardware and network constraints.
                 </p>
               </div>
@@ -356,18 +358,21 @@ const Projects = () => {
                   transition: "opacity 450ms ease, transform 450ms ease",
                   pointerEvents: activeProject === 1 ? "auto" : "none"
                 }}>
-                <div className="text-[10px] font-medium text-neutral-400 tracking-[0.2em] uppercase mb-1">{projects[0].category}</div>
+                <div className="text-xs font-medium text-neutral-400 tracking-[0.2em] uppercase mb-1">{projects[0].category}</div>
                 <h3 className="font-author text-4xl xl:text-5xl font-normal tracking-wide text-white leading-none">{projects[0].title}</h3>
                 <div className="text-xs font-medium text-orange-400 tracking-wide uppercase mt-1">{projects[0].role}</div>
-                <p className="font-author text-[13px] text-neutral-400 leading-relaxed mt-3 font-light">{projects[0].description}</p>
+                <p className="font-author text-sm md:text-base text-neutral-400 leading-relaxed mt-3 font-light">{projects[0].description}</p>
                 <div className="flex flex-wrap gap-1.5 mt-4">
                   {projects[0].tech.map((s) => (
-                    <span key={s} className="text-[9px] font-mono font-medium text-neutral-400 border border-white/5 bg-white/[0.01] px-2 py-0.5">{s}</span>
+                    <span key={s} className="text-[11px] font-mono font-medium text-neutral-400 border border-white/5 bg-white/[0.01] px-2 py-0.5">{s}</span>
                   ))}
                 </div>
                 <a href={projects[0].linkUrl} target="_blank" rel="noopener noreferrer"
-                   className="inline-block mt-4 text-xs font-medium text-orange-400 hover:underline tracking-wider uppercase">
-                  {projects[0].linkText} ↗
+                   className="inline-flex items-center gap-1 mt-4 text-xs font-medium text-orange-400 hover:underline tracking-wider uppercase group">
+                  {projects[0].linkText}
+                  <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
+                  </svg>
                 </a>
               </div>
 
@@ -379,25 +384,28 @@ const Projects = () => {
                   transition: "opacity 450ms ease, transform 450ms ease",
                   pointerEvents: activeProject === 2 ? "auto" : "none"
                 }}>
-                <div className="text-[10px] font-medium text-neutral-400 tracking-[0.2em] uppercase mb-1">{projects[1].category}</div>
+                <div className="text-xs font-medium text-neutral-400 tracking-[0.2em] uppercase mb-1">{projects[1].category}</div>
                 <h3 className="font-author text-4xl xl:text-5xl font-normal tracking-wide text-white leading-none">{projects[1].title}</h3>
                 <div className="text-xs font-medium text-orange-400 tracking-wide uppercase mt-1">{projects[1].role}</div>
-                <p className="font-author text-[13px] text-neutral-400 leading-relaxed mt-3 font-light">{projects[1].description}</p>
+                <p className="font-author text-sm md:text-base text-neutral-400 leading-relaxed mt-3 font-light">{projects[1].description}</p>
                 <div className="flex flex-wrap gap-1.5 mt-4">
                   {projects[1].tech.map((s) => (
-                    <span key={s} className="text-[9px] font-mono font-medium text-neutral-400 border border-white/5 bg-white/[0.01] px-2 py-0.5">{s}</span>
+                    <span key={s} className="text-[11px] font-mono font-medium text-neutral-400 border border-white/5 bg-white/[0.01] px-2 py-0.5">{s}</span>
                   ))}
                 </div>
                 <a href={projects[1].linkUrl} target="_blank" rel="noopener noreferrer"
-                   className="inline-block mt-4 text-xs font-medium text-orange-400 hover:underline tracking-wider uppercase">
-                  {projects[1].linkText} ↗
+                   className="inline-flex items-center gap-1 mt-4 text-xs font-medium text-orange-400 hover:underline tracking-wider uppercase group">
+                  {projects[1].linkText}
+                  <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
+                  </svg>
                 </a>
               </div>
 
             </div>
 
             {/* Progress lines */}
-            <div className="flex items-center gap-5 mt-6 font-mono text-[9px] font-medium text-neutral-400 tracking-wider">
+            <div className="flex items-center gap-5 mt-4 font-mono text-[10px] font-medium text-neutral-400 tracking-wider">
               {[
                 { label: "INTRO",       ref: bar0Ref, active: activeProject === 0 },
                 { label: "NYAYAAI",     ref: bar1Ref, active: activeProject === 1 },

@@ -4,14 +4,22 @@ import React from "react";
 
 const TextMarquee = () => {
   const words = [
-    "SYSTEMS ARCHITECTURE",
-    "INTERFACE ENGINEERING",
-    "LATENCY OPTIMIZATION",
-    "RESILIENT INFRASTRUCTURE",
-    "DATA SECURITY",
-    "TELEMETRY STREAMING",
-    "FLUID INTERACTION",
-    "ZERO-CRASH DEPLOYMENT"
+    "REACT.JS",
+    "NEXT.JS",
+    "NODE.JS",
+    "EXPRESS.JS",
+    "FASTAPI",
+    "PRISMA ORM",
+    "POSTGRESQL",
+    "MONGODB",
+    "JAVASCRIPT",
+    "TYPESCRIPT",
+    "PYTHON",
+    "AWS EC2",
+    "JENKINS CI/CD",
+    "OPENVPN",
+    "BASH",
+    "LINUX SERVER"
   ];
 
   return (
@@ -25,7 +33,7 @@ const TextMarquee = () => {
         {/* Track 1 */}
         <div className="flex animate-[marquee_36s_linear_infinite] gap-8 shrink-0 min-w-full justify-around items-center">
           {words.map((word, idx) => (
-            <div key={`t1-${idx}`} className="flex items-center gap-8 font-mono text-[9px] md:text-[10px] text-neutral-400 font-bold uppercase tracking-[0.25em]">
+            <div key={`t1-${idx}`} className="flex items-center gap-8 font-mono text-[11px] md:text-xs text-neutral-400 font-bold uppercase tracking-[0.25em]">
               <span>{word}</span>
               <span className="text-orange-500 font-extrabold select-none shadow-[0_0_8px_rgba(249,115,22,0.4)]">//</span>
             </div>
@@ -35,7 +43,7 @@ const TextMarquee = () => {
         {/* Track 2 (Seamless loop replica) */}
         <div className="flex animate-[marquee_36s_linear_infinite] gap-8 shrink-0 min-w-full justify-around items-center" aria-hidden="true">
           {words.map((word, idx) => (
-            <div key={`t2-${idx}`} className="flex items-center gap-8 font-mono text-[9px] md:text-[10px] text-neutral-400 font-bold uppercase tracking-[0.25em]">
+            <div key={`t2-${idx}`} className="flex items-center gap-8 font-mono text-[11px] md:text-xs text-neutral-400 font-bold uppercase tracking-[0.25em]">
               <span>{word}</span>
               <span className="text-orange-500 font-extrabold select-none shadow-[0_0_8px_rgba(249,115,22,0.4)]">//</span>
             </div>

@@ -10,142 +10,460 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+interface SkillCategory {
+  id: string;
+  title: string;
+  subtitle: string;
+  status: string;
+  skills: string[];
+  desc: string;
+  icon: React.ReactNode;
+}
+
+const TechCard = ({
+  category,
+  index,
+  isLast,
+}: {
+  category: SkillCategory;
+  index: number;
+  isLast: boolean;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      className={`about-fade-in relative overflow-hidden rounded-2xl border border-white/5 bg-neutral-900/10 p-6 md:p-8 backdrop-blur-md transition-all duration-500 group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] ${
+        isLast ? "md:col-span-2" : "col-span-1"
+      }`}
+    >
+      {/* Dynamic Cursor Spotlight Glow */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl z-0"
+        style={{
+          background: `radial-gradient(300px circle at ${coords.x}px ${coords.y}px, rgba(249, 115, 22, 0.08), transparent 80%)`,
+        }}
+      />
+
+      {/* Cyberpunk Grid Grid Pattern background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:16px_16px] opacity-20 group-hover:opacity-40 transition-opacity duration-500 z-0" />
+
+      {/* Corner trims */}
+      <div className="absolute top-0 left-0 w-2.5 h-[2px] bg-orange-500/40 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute top-0 left-0 w-[2px] h-2.5 bg-orange-500/40 group-hover:bg-orange-500 transition-colors duration-500" />
+      
+      <div className="absolute top-0 right-0 w-2.5 h-[2px] bg-orange-500/0 group-hover:bg-orange-500/40 transition-colors duration-500" />
+      <div className="absolute top-0 right-0 w-[2px] h-2.5 bg-orange-500/0 group-hover:bg-orange-500/40 transition-colors duration-500" />
+      
+      <div className="absolute bottom-0 left-0 w-2.5 h-[2px] bg-orange-500/0 group-hover:bg-orange-500/40 transition-colors duration-500" />
+      <div className="absolute bottom-0 left-0 w-[2px] h-2.5 bg-orange-500/0 group-hover:bg-orange-500/40 transition-colors duration-500" />
+
+      <div className="absolute bottom-0 right-0 w-2.5 h-[2px] bg-orange-500/40 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute bottom-0 right-0 w-[2px] h-2.5 bg-orange-500/40 group-hover:bg-orange-500 transition-colors duration-500" />
+
+      {/* Top Accent Orange Glow Bar */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-[80%] h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent transition-all duration-700" />
+
+      {/* Card Header: Subtitle & Status */}
+      <div className="relative z-10 flex items-center justify-between mb-6 select-none font-mono text-[10px] md:text-xs">
+        <span className="tracking-[0.2em] text-orange-500/80 font-semibold uppercase group-hover:text-orange-400 transition-colors duration-300">
+          {category.subtitle}
+        </span>
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse" />
+          <span className="text-neutral-500 font-medium tracking-widest uppercase">
+            SYS.{category.status}
+          </span>
+        </div>
+      </div>
+
+      {/* Card Title & Icon Layout */}
+      <div className="relative z-10 flex items-start justify-between mb-4">
+        <div>
+          <span className="text-[10px] font-mono text-neutral-500 block mb-1">
+            02.{index + 1} / TECH STACK
+          </span>
+          <h3 className="font-author text-2xl md:text-3xl font-semibold tracking-tight text-white group-hover:text-orange-400 transition-colors duration-300">
+            {category.title}
+          </h3>
+        </div>
+        <div className="p-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-orange-500/80 group-hover:text-orange-400 group-hover:border-orange-500/20 group-hover:bg-orange-500/5 transition-all duration-500">
+          {category.icon}
+        </div>
+      </div>
+
+      {/* Description */}
+      <p className="relative z-10 font-author text-sm md:text-base text-neutral-400 leading-relaxed font-light mb-6">
+        {category.desc}
+      </p>
+
+      {/* Skill Tags */}
+      <div className="relative z-10 flex flex-wrap gap-2 md:gap-2.5">
+        {category.skills.map((skill) => (
+          <span
+            key={skill}
+            className="px-3 py-1.5 rounded-lg border border-white/5 bg-white/[0.02] text-neutral-300 font-mono text-xs md:text-sm hover:border-orange-500/30 hover:text-orange-400 hover:bg-orange-500/5 transition-all duration-300 cursor-default"
+          >
+            + {skill}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ProfileCard = ({
+  title,
+  subtitle,
+  desc,
+  icon,
+  className = "",
+}: {
+  title: string;
+  subtitle: string;
+  desc: string;
+  icon: React.ReactNode;
+  className?: string;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      className={`profile-fade-in relative overflow-hidden rounded-2xl border border-white/5 bg-neutral-900/10 p-6 md:p-8 backdrop-blur-md transition-all duration-500 group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] ${className}`}
+    >
+      {/* Dynamic Cursor Spotlight Glow */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl z-0"
+        style={{
+          background: `radial-gradient(300px circle at ${coords.x}px ${coords.y}px, rgba(249, 115, 22, 0.08), transparent 80%)`,
+        }}
+      />
+
+      {/* Cyberpunk Grid Grid Pattern background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:16px_16px] opacity-20 group-hover:opacity-40 transition-opacity duration-500 z-0" />
+
+      {/* Corner trims */}
+      <div className="absolute top-0 left-0 w-2.5 h-[2px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute top-0 left-0 w-[2px] h-2.5 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute bottom-0 right-0 w-2.5 h-[2px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute bottom-0 right-0 w-[2px] h-2.5 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+
+      {/* Top Accent Orange Glow Bar */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-[80%] h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent transition-all duration-700" />
+
+      <div className="relative z-10 flex items-start justify-between mb-4">
+        <div>
+          <span className="text-[10px] font-mono text-orange-500/80 tracking-widest block uppercase mb-1">
+            {subtitle}
+          </span>
+          <h4 className="font-author text-2xl font-semibold tracking-tight text-white group-hover:text-orange-400 transition-colors duration-300">
+            {title}
+          </h4>
+        </div>
+        <div className="p-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-orange-500/80 group-hover:text-orange-400 group-hover:border-orange-500/20 group-hover:bg-orange-500/5 transition-all duration-500">
+          {icon}
+        </div>
+      </div>
+
+      <p className="relative z-10 font-author text-sm md:text-base text-neutral-400 leading-relaxed font-light">
+        {desc}
+      </p>
+    </div>
+  );
+};
+
+const TimelineCard = ({
+  dates,
+  role,
+  company,
+  locationInfo,
+  bullets,
+}: {
+  dates: string;
+  role: string;
+  company: string;
+  locationInfo?: string;
+  bullets: React.ReactNode[];
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <div className="relative pl-8 group/item experience-fade-in">
+      {/* Node Dot with pulse ring */}
+      <div className="absolute left-[6px] -translate-x-1/2 top-[28px] w-3 h-3 rounded-full border-2 bg-black border-neutral-700 group-hover/item:border-orange-500 group-hover/item:bg-orange-500 group-hover/item:shadow-[0_0_8px_rgba(249,115,22,0.8)] group-hover/item:scale-110 transition-all duration-500 z-10">
+        <span className="absolute -inset-1.5 rounded-full border border-orange-500/30 animate-ping opacity-0 group-hover/item:opacity-100 transition-opacity duration-500" />
+      </div>
+
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        className="relative overflow-hidden transition-all duration-500 p-6 rounded-2xl border border-white/5 bg-neutral-900/10 backdrop-blur-md group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] w-full"
+      >
+        {/* Spotlight */}
+        <div
+          className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl z-0"
+          style={{
+            background: `radial-gradient(250px circle at ${coords.x}px ${coords.y}px, rgba(249, 115, 22, 0.08), transparent 80%)`,
+          }}
+        />
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:16px_16px] opacity-20 group-hover:opacity-40 transition-opacity duration-500 z-0" />
+
+        {/* Cyber trims */}
+        <div className="absolute top-0 left-0 w-2.5 h-[1.5px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+        <div className="absolute top-0 left-0 w-[1.5px] h-2.5 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+        <div className="absolute bottom-0 right-0 w-2.5 h-[1.5px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+        <div className="absolute bottom-0 right-0 w-[1.5px] h-2.5 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+
+        {/* Top Accent Glow Bar */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-[80%] h-[1.5px] bg-gradient-to-r from-transparent via-orange-500/60 to-transparent transition-all duration-700" />
+
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-mono text-neutral-400 tracking-wider group-hover:text-orange-400/80 transition-colors">
+              {dates} {locationInfo && `· ${locationInfo}`}
+            </span>
+            <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)] animate-pulse" />
+              <span className="text-[8px] font-mono text-neutral-500 uppercase tracking-widest">VERIFIED</span>
+            </div>
+          </div>
+
+          <h4 className="font-author text-xl font-semibold tracking-tight text-white group-hover:text-orange-400 transition-colors duration-300">
+            {role}
+          </h4>
+          <p className="text-sm font-semibold text-orange-400/90 tracking-wide mt-0.5">
+            {company}
+          </p>
+
+          <ul className="text-sm text-neutral-400 mt-4 flex flex-col gap-2 list-disc pl-4 leading-relaxed font-light group-hover:text-neutral-300 transition-colors">
+            {bullets.map((bullet, i) => (
+              <li key={i}>{bullet}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AchievementCard = ({
+  category,
+  title,
+  desc,
+  linkText,
+  linkUrl,
+}: {
+  category: string;
+  title: string;
+  desc: string;
+  linkText: string;
+  linkUrl: string;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      className="relative overflow-hidden transition-all duration-500 p-6 rounded-2xl border border-white/5 bg-neutral-900/10 backdrop-blur-md group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] w-full experience-fade-in"
+    >
+      {/* Spotlight */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl z-0"
+        style={{
+          background: `radial-gradient(250px circle at ${coords.x}px ${coords.y}px, rgba(249, 115, 22, 0.08), transparent 80%)`,
+        }}
+      />
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:16px_16px] opacity-20 group-hover:opacity-40 transition-opacity duration-500 z-0" />
+
+      {/* Cyber trims */}
+      <div className="absolute top-0 left-0 w-2.5 h-[1.5px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute top-0 left-0 w-[1.5px] h-2.5 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute bottom-0 right-0 w-2.5 h-[1.5px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+      <div className="absolute bottom-0 right-0 w-[1.5px] h-2.5 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500" />
+
+      {/* Top Accent Glow Bar */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-[80%] h-[1.5px] bg-gradient-to-r from-transparent via-orange-500/60 to-transparent transition-all duration-700" />
+
+      <div className="relative z-10">
+        <span className="text-[10px] font-mono text-neutral-400 tracking-wider group-hover:text-orange-400 transition-colors block mb-1">
+          {category}
+        </span>
+        <h4 className="font-author text-lg font-semibold text-white group-hover:text-orange-400 transition-colors duration-300">
+          {title}
+        </h4>
+        <p className="text-sm text-neutral-400 mt-2 leading-relaxed font-light group-hover:text-neutral-300 transition-colors">
+          {desc}{" "}
+          <a
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-orange-400 font-medium hover:underline inline-flex items-center gap-1 group/link"
+          >
+            {linkText}
+            <svg className="w-3 h-3 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform duration-200" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
+            </svg>
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const EducationCard = ({
+  dates,
+  degree,
+  school,
+  locationInfo,
+}: {
+  dates: string;
+  degree: string;
+  school: string;
+  locationInfo?: string;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      className="relative overflow-hidden transition-all duration-500 p-5 rounded-xl border border-white/5 bg-neutral-900/10 backdrop-blur-md group hover:border-orange-500/20 hover:bg-[#0a0a0a]/80 w-full experience-fade-in"
+    >
+      {/* Spotlight */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl z-0"
+        style={{
+          background: `radial-gradient(200px circle at ${coords.x}px ${coords.y}px, rgba(249, 115, 22, 0.05), transparent 80%)`,
+        }}
+      />
+      {/* Corner accent decorations */}
+      <div className="absolute top-0 left-0 w-2 h-[1px] bg-orange-500/10 group-hover:bg-orange-500/40 transition-colors" />
+      <div className="absolute top-0 left-0 w-[1px] h-2 bg-orange-500/10 group-hover:bg-orange-500/40 transition-colors" />
+
+      <div className="relative z-10">
+        <span className="text-[10px] font-mono text-neutral-400 tracking-wider group-hover:text-orange-400/80 transition-colors">
+          {dates} {locationInfo && `· ${locationInfo}`}
+        </span>
+        <h4 className="font-author text-base font-semibold text-white mt-1 group-hover:text-orange-400 transition-colors duration-300">
+          {degree}
+        </h4>
+        <p className="text-sm text-neutral-400 font-light mt-0.5 group-hover:text-neutral-300 transition-colors">
+          {school}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const ResumeCard = ({ onClick }: { onClick: () => void }) => {
+  const cardRef = useRef<HTMLButtonElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <button
+      ref={cardRef}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      className="group relative w-full rounded-2xl overflow-hidden border border-white/5 bg-neutral-900/10 backdrop-blur-md transition-all duration-500 text-left shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:border-orange-500/40 hover:shadow-[0_25px_60px_rgba(249,115,22,0.08)] hover:scale-[1.01] cursor-pointer experience-fade-in"
+      aria-label="View full resume"
+    >
+      {/* Spotlight */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl z-10"
+        style={{
+          background: `radial-gradient(350px circle at ${coords.x}px ${coords.y}px, rgba(249, 115, 22, 0.08), transparent 80%)`,
+        }}
+      />
+
+      {/* Cyber trims */}
+      <div className="absolute top-0 left-0 w-4 h-[2px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500 z-20" />
+      <div className="absolute top-0 left-0 w-[2px] h-4 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500 z-20" />
+      <div className="absolute bottom-0 right-0 w-4 h-[2px] bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500 z-20" />
+      <div className="absolute bottom-0 right-0 w-[2px] h-4 bg-orange-500/20 group-hover:bg-orange-500 transition-colors duration-500 z-20" />
+
+      {/* Top Accent Orange Glow Bar */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-[80%] h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent transition-all duration-700 z-20" />
+
+      <div className="relative overflow-hidden w-full h-auto">
+        <Image
+          src="/images/resume.jpg"
+          alt="Lovekesh Anand Resume"
+          width={794}
+          height={1123}
+          className="w-full h-auto block filter brightness-95 contrast-105 group-hover:scale-[1.02] transition-transform duration-700"
+          priority
+        />
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 z-10">
+          <div className="w-14 h-14 rounded-full border border-orange-500/60 flex items-center justify-center bg-orange-500/10 shadow-[0_0_15px_rgba(249,115,22,0.2)] animate-pulse">
+            <svg className="w-6 h-6 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+            </svg>
+          </div>
+          <span className="text-xs font-mono tracking-[0.3em] uppercase text-orange-400 font-semibold drop-shadow">Click to expand</span>
+        </div>
+      </div>
+    </button>
+  );
+};
+
 const About = () => {
-  const [activeStackTab, setActiveStackTab] = useState<string>("all");
   const [resumeOpen, setResumeOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Refs for direct DOM class/style updates to prevent whole-page React re-renders on scroll
-  const highlight1Ref = useRef<HTMLSpanElement>(null);
-  const highlight2Ref = useRef<HTMLSpanElement>(null);
-  const underline2Ref = useRef<HTMLSpanElement>(null);
-  const bento1Ref = useRef<HTMLDivElement>(null);
-  const bento1TitleRef = useRef<HTMLHeadingElement>(null);
-  const bento2Ref = useRef<HTMLDivElement>(null);
-  const bento2TitleRef = useRef<HTMLHeadingElement>(null);
-  const timelineCardRef = useRef<HTMLDivElement>(null);
-  const timelineDotRef = useRef<HTMLDivElement>(null);
-  const timelineTitleRef = useRef<HTMLHeadingElement>(null);
-  const achievementsCardRef = useRef<HTMLDivElement>(null);
-  const resumeCardRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const handleScroll = () => {
-      const viewportHeight = window.innerHeight;
-      const scrollY = window.scrollY;
-      const aboutStart = viewportHeight * 0.2;
-      const aboutDuration = viewportHeight * 3.3;
-      const progress = (scrollY - aboutStart) / aboutDuration;
-      const clampedProgress = Math.max(0, Math.min(1, progress));
-
-      // 1. scrollProgress > 0.15
-      if (highlight1Ref.current) {
-        if (clampedProgress > 0.15) {
-          highlight1Ref.current.className = "transition-all duration-700 text-orange-400 font-normal italic";
-        } else {
-          highlight1Ref.current.className = "transition-all duration-700 text-white";
-        }
-      }
-
-      // 2. scrollProgress > 0.22
-      if (highlight2Ref.current) {
-        if (clampedProgress > 0.22) {
-          highlight2Ref.current.className = "relative inline-block transition-all duration-700 font-normal text-orange-400";
-        } else {
-          highlight2Ref.current.className = "relative inline-block transition-all duration-700 font-normal text-white";
-        }
-      }
-      if (underline2Ref.current) {
-        if (clampedProgress > 0.22) {
-          underline2Ref.current.className = "absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left scale-x-100";
-        } else {
-          underline2Ref.current.className = "absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left scale-x-0";
-        }
-      }
-
-      // 3. scrollProgress > 0.32
-      if (bento1Ref.current) {
-        if (clampedProgress > 0.32) {
-          bento1Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-orange-500/30 bg-black/60 text-neutral-200 shadow-[6px_6px_0px_rgba(249,115,22,0.08)]";
-        } else {
-          bento1Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400";
-        }
-      }
-      if (bento1TitleRef.current) {
-        if (clampedProgress > 0.32) {
-          bento1TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-orange-400";
-        } else {
-          bento1TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400";
-        }
-      }
-
-      // 4. scrollProgress > 0.38
-      if (bento2Ref.current) {
-        if (clampedProgress > 0.38) {
-          bento2Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-orange-500/30 bg-black/60 text-neutral-200 shadow-[6px_6px_0px_rgba(249,115,22,0.08)]";
-        } else {
-          bento2Ref.current.className = "p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400";
-        }
-      }
-      if (bento2TitleRef.current) {
-        if (clampedProgress > 0.38) {
-          bento2TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-orange-400";
-        } else {
-          bento2TitleRef.current.className = "text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400";
-        }
-      }
-
-      // 5. scrollProgress > 0.58
-      if (timelineCardRef.current) {
-        if (clampedProgress > 0.58) {
-          timelineCardRef.current.className = "relative transition-all duration-700 p-4 rounded-xl backdrop-blur-md border bg-white/[0.02] border-orange-500/40 shadow-[4px_4px_0px_rgba(249,115,22,0.08)]";
-        } else {
-          timelineCardRef.current.className = "relative transition-all duration-700 p-4 rounded-xl backdrop-blur-md border bg-white/[0.01] border-white/5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)]";
-        }
-      }
-      if (timelineDotRef.current) {
-        if (clampedProgress > 0.58) {
-          timelineDotRef.current.className = "absolute -left-[31px] top-5.5 w-4 h-4 rounded-full border-2 bg-black transition-all duration-500 border-orange-500 scale-110";
-        } else {
-          timelineDotRef.current.className = "absolute -left-[31px] top-5.5 w-4 h-4 rounded-full border-2 bg-black transition-all duration-500 border-neutral-700";
-        }
-      }
-      if (timelineTitleRef.current) {
-        if (clampedProgress > 0.58) {
-          timelineTitleRef.current.className = "font-author text-lg font-semibold mt-1 transition-colors duration-500 text-orange-400";
-        } else {
-          timelineTitleRef.current.className = "font-author text-lg font-semibold mt-1 transition-colors duration-500 text-white";
-        }
-      }
-
-      // 6. scrollProgress > 0.65
-      if (achievementsCardRef.current) {
-        if (clampedProgress > 0.65) {
-          achievementsCardRef.current.className = "border p-5 relative group transition-all duration-700 rounded-xl backdrop-blur-md border-orange-500/40 bg-white/[0.02] shadow-[6px_6px_0px_rgba(249,115,22,0.08)] text-white";
-        } else {
-          achievementsCardRef.current.className = "border p-5 relative group transition-all duration-700 rounded-xl backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400";
-        }
-      }
-
-      // 7. scrollProgress > 0.72
-      if (resumeCardRef.current) {
-        if (clampedProgress > 0.72) {
-          resumeCardRef.current.className = "group relative w-full rounded-xl overflow-hidden border transition-all duration-700 text-left border-orange-500/40 shadow-[12px_12px_0px_rgba(249,115,22,0.08)] hover:border-orange-500/50 hover:shadow-[0_12px_48px_rgba(249,115,22,0.15)] hover:scale-[1.01] cursor-pointer";
-        } else {
-          resumeCardRef.current.className = "group relative w-full rounded-xl overflow-hidden border transition-all duration-700 text-left border-white/5 shadow-[12px_12px_0px_rgba(0,0,0,0.2)] hover:border-orange-500/50 hover:shadow-[0_12px_48px_rgba(249,115,22,0.15)] hover:scale-[1.01] cursor-pointer";
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // initial state run
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   useGSAP(() => {
     const headings = gsap.utils.toArray<HTMLElement>(".about-heading-reveal");
@@ -181,42 +499,129 @@ const About = () => {
         toggleActions: "play none none none"
       }
     });
+
+    // Fade-in profile section cards on scroll
+    gsap.fromTo(".profile-fade-in", {
+      opacity: 0,
+      y: 35
+    }, {
+      opacity: 1,
+      y: 0,
+      duration: 0.85,
+      stagger: 0.05,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".profile-fade-in-trigger",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      }
+    });
+
+    // Fade-in experience timeline, achievements, and resume on scroll
+    gsap.fromTo(".experience-fade-in", {
+      opacity: 0,
+      y: 35
+    }, {
+      opacity: 1,
+      y: 0,
+      duration: 0.85,
+      stagger: 0.05,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#experience",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      }
+    });
   }, { scope: sectionRef });
 
-  const skillCategories = [
+  const skillCategories: SkillCategory[] = [
     {
       id: "languages",
       title: "Languages",
-      skills: ["JavaScript", "Python", "C", "Bash", "HTML", "CSS"]
+      subtitle: "LAYER_01 / COMPILER_CORE",
+      status: "ONLINE",
+      skills: ["JavaScript", "Python", "C", "Bash", "HTML", "CSS"],
+      desc: "Scripting and programming languages used to write application logic, automation routines, and interface layouts.",
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M16 18L22 12L16 6" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M8 6L2 12L8 18" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M14 4L10 20" strokeLinecap="round" />
+        </svg>
+      )
     },
     {
       id: "backend",
       title: "Backend Systems",
-      skills: ["Node.js", "Express.js", "FastAPI", "Prisma ORM", "REST APIs", "JWT Auth", "RBAC"]
+      subtitle: "LAYER_02 / SYSTEM_API",
+      status: "DEPLOYED",
+      skills: ["Node.js", "Express.js", "FastAPI", "Prisma ORM", "REST APIs", "JWT Auth", "RBAC"],
+      desc: "Architecting secure and performant APIs with robust authentication, role permissions, and database abstractions.",
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="2" y="3" width="20" height="6" rx="1" />
+          <rect x="2" y="15" width="20" height="6" rx="1" />
+          <circle cx="6" cy="6" r="1" fill="currentColor" />
+          <circle cx="6" cy="18" r="1" fill="currentColor" />
+          <path d="M14 6H18" strokeLinecap="round" />
+          <path d="M14 18H18" strokeLinecap="round" />
+          <path d="M12 9V15" strokeLinecap="round" strokeDasharray="2 2" />
+        </svg>
+      )
     },
     {
       id: "frontend",
       title: "Frontend Engineering",
-      skills: ["React.js", "Next.js", "Vite", "Tailwind CSS"]
+      subtitle: "LAYER_03 / REACTIVE_UI",
+      status: "OPTIMIZED",
+      skills: ["React.js", "Next.js", "Vite", "Tailwind CSS"],
+      desc: "Crafting fluid, responsive user interfaces with premium styling systems and seamless client state sync.",
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <path d="M8 21H16" strokeLinecap="round" />
+          <path d="M12 17V21" strokeLinecap="round" />
+          <path d="M2 8H22" />
+        </svg>
+      )
     },
     {
       id: "cloud",
       title: "Cloud & Security",
-      skills: ["AWS EC2", "Jenkins (CI/CD)", "PM2", "OpenVPN", "DNS Routing", "API Security", "Linux Server Admin"]
+      subtitle: "LAYER_04 / INFRA_SHIELD",
+      status: "ENCRYPTED",
+      skills: ["AWS EC2", "Jenkins (CI/CD)", "PM2", "OpenVPN", "DNS Routing", "API Security", "Linux Server Admin"],
+      desc: "Orchestrating secure server environments, virtual private networks, DNS mappings, and automated build flows.",
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M9 11L11 13L15 9" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
     },
     {
       id: "databases",
       title: "Databases & Ops",
-      skills: ["PostgreSQL", "MongoDB", "SQLite", "Git / GitHub", "Postman", "WebSockets", "Performance Monitoring"]
+      subtitle: "LAYER_05 / PERSISTENCE_FLOW",
+      status: "STABLE",
+      skills: ["PostgreSQL", "MongoDB", "SQLite", "Git / GitHub", "Postman", "WebSockets", "Performance Monitoring"],
+      desc: "Optimizing relational and document data layouts, connection pipelines, socket channels, and Git integration.",
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <ellipse cx="12" cy="5" rx="9" ry="3" />
+          <path d="M3 5V12C3 13.66 7.03 15 12 15C16.97 15 21 13.66 21 12V5" />
+          <path d="M3 12V19C3 20.66 7.03 22 12 22C16.97 22 21 20.66 21 19V12" />
+          <path d="M12 8C16 8 19 6.5 19 5" strokeDasharray="2 2" />
+        </svg>
+      )
     }
   ];
-
-  const allSkills = skillCategories.flatMap(cat => cat.skills);
 
   return (
     <div ref={sectionRef} className="relative bg-neutral-950 text-neutral-200 border-t border-white/5">
 
-      {/* â”€â”€ SECTION 01: ABOUT ME (PROFILE) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── SECTION 01: ABOUT ME (PROFILE) ────────────────────────────────── */}
       <section id="about" className="relative grid grid-cols-1 lg:grid-cols-12 border-b border-white/5 z-10">
         
         {/* Sticky Column Left */}
@@ -228,43 +633,51 @@ const About = () => {
             <span className="block overflow-hidden"><span className="block translate-y-[100%] transition-transform duration-100">About</span></span>
             <span className="block overflow-hidden"><span className="block translate-y-[100%] transition-transform duration-100"><em className="italic font-serif text-orange-400">Me</em></span></span>
           </h2>
-          <p className="font-author text-sm text-neutral-400 font-normal mt-4 leading-relaxed max-w-xs">
-            A 20-year-old full-stack developer who builds products end-to-end — from UIs to the cloud infrastructure behind them.
+          <p className="font-author text-base text-neutral-400 font-normal mt-4 leading-relaxed max-w-xs">
+            A full-stack developer focused on engineering elegant client applications and high-performance backend infrastructure.
           </p>
         </div>
 
         {/* Dynamic Content Right with Sleek Dark Glassmorphism Backing */}
         <div className="lg:col-span-8 p-8 md:p-16 flex flex-col justify-center select-text bg-black/40 backdrop-blur-md border-b lg:border-b-0 lg:border-l border-white/5">
-          {/* Chronatic Color-Shift Text Sync with Scroll */}
-          <p className="font-author text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.2] text-white tracking-normal font-normal mb-8 max-w-4xl transition-colors duration-500">
-            I am a <span ref={highlight1Ref} className="transition-all duration-700 text-white">20-year-old full-stack developer</span> with a growing obsession for the infrastructure that powers software. I don't just write code — I care deeply about <span ref={highlight2Ref} className="relative inline-block transition-all duration-700 font-normal text-white">
-              how it deploys, scales, and survives
-              <span ref={underline2Ref} className="absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left scale-x-0" />
-            </span> — designing architectures that run efficiently under real CPU, memory, and network pressure.
+          <p className="font-author text-[clamp(1.8rem,3vw,2.6rem)] leading-[1.2] text-neutral-400 tracking-normal font-normal mb-8 max-w-4xl">
+            I am a 20 year old <span className="text-orange-400 font-medium">full-stack developer</span> dedicated to building end-to-end digital experiences. I bridge the gap between <span className="text-white font-medium">elegant frontend interfaces</span> and <span className="text-white font-medium">robust, scalable backend architectures, </span>crafting high-performance software that is clean, secure, and optimized from the pixel level to the cloud deployment layer.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-white/5 pt-8 mt-4 font-author">
-            {/* Core Philosophy dynamic highlight */}
-            <div ref={bento1Ref} className="p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400">
-              <h4 ref={bento1TitleRef} className="text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400">CORE PHILOSOPHY</h4>
-              <p className="text-sm leading-relaxed font-light">
-                I believe the best engineers understand what happens after `git push`. Great products are shaped by their deployment constraints — the right caching strategy, a well-tuned reverse proxy, and a resilient CI/CD pipeline make all the difference.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/5 pt-8 mt-4 profile-fade-in-trigger">
+            <ProfileCard
+              title="Core Philosophy"
+              subtitle="01 / BELIEF_SYSTEM"
+              desc="I believe the best engineers understand what happens after `git push`. Great products are shaped by their deployment constraints — the right caching strategy, a well-tuned reverse proxy, and a resilient CI/CD pipeline make all the difference."
+              icon={
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M9.66667 6L6 9.66667L9.66667 13.3333" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M14.3333 13.3333L18 9.66667L14.3333 6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M13 3L11 17" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              }
+            />
 
-            {/* What I Do dynamic highlight */}
-            <div ref={bento2Ref} className="p-4 border rounded-xl transition-all duration-700 backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400">
-              <h4 ref={bento2TitleRef} className="text-xs font-medium tracking-[0.2em] uppercase mb-3 transition-colors duration-500 text-neutral-400">WHAT I DO</h4>
-              <p className="text-sm leading-relaxed font-light">
-                Building full-stack web applications with React, Next.js, and Node.js — while managing the cloud infrastructure they live on. Currently configuring AWS EC2 instances, automating Jenkins pipelines, and hardening OpenVPN gateways at EaseInfra.
-              </p>
-            </div>
+            <ProfileCard
+              title="What I Do"
+              subtitle="02 / ACTIVE_OPERATIONS"
+              desc="Building full-stack web applications with React, Next.js, and Node.js — while managing the cloud infrastructure they live on. Currently configuring AWS EC2 instances, automating Jenkins pipelines, and hardening OpenVPN gateways at EaseInfra."
+              icon={
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8 16h8" strokeLinecap="round" />
+                  <path d="M12 12v8" strokeLinecap="round" />
+                  <path d="M12 20l-3-3" strokeLinecap="round" />
+                  <path d="M12 20l3-3" strokeLinecap="round" />
+                </svg>
+              }
+            />
           </div>
         </div>
 
       </section> 
 
-      {/* â”€â”€ SECTION 02: TECH STACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── SECTION 02: TECH STACK ────────────────────────────────────────── */}
       <section id="stack" className="relative grid grid-cols-1 lg:grid-cols-12 border-b border-white/5 z-10">
         
         {/* Sticky Column Left */}
@@ -276,61 +689,31 @@ const About = () => {
             <span className="block overflow-hidden"><span className="block translate-y-[100%] transition-transform duration-100">Tech</span></span>
             <span className="block overflow-hidden"><span className="block translate-y-[100%] transition-transform duration-100"><em className="italic font-serif text-orange-400">Stack</em></span></span>
           </h2>
-          
-          {/* Tab filter triggers */}
-          <div className="flex flex-col gap-2 mt-8 font-sans">
-            <button 
-              onClick={() => setActiveStackTab("all")}
-              className={`text-left text-xs font-medium tracking-[0.2em] uppercase py-2 transition-all duration-300 ${
-                activeStackTab === "all" ? "text-orange-400 translate-x-2" : "text-neutral-400 hover:text-neutral-200"
-              }`}
-            >
-              // Show All Stack ({allSkills.length})
-            </button>
-            {skillCategories.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveStackTab(cat.id)}
-                className={`text-left text-xs font-medium tracking-[0.2em] uppercase py-2 transition-all duration-300 ${
-                  activeStackTab === cat.id ? "text-orange-400 translate-x-2" : "text-neutral-400 hover:text-neutral-200"
-                }`}
-              >
-                {cat.title} ({cat.skills.length})
-              </button>
-            ))}
-          </div>
+          <p className="font-author text-base text-neutral-400 font-light mt-4 leading-relaxed max-w-xs">
+            A structured look at my engineering toolkit, grouped by operational layer and technical focus.
+          </p>
         </div>
 
         {/* Dynamic Content Right */}
         <div className="lg:col-span-8 p-8 md:p-16 about-fade-in-trigger">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {skillCategories.map((category) => {
-              const isFiltered = activeStackTab !== "all" && activeStackTab !== category.id;
-              return category.skills.map((skill) => (
-                <div
-                  key={skill}
-                  className={`about-fade-in border border-white/5 p-6 flex flex-col justify-between aspect-[1.4] transition-all duration-500 bg-white/[0.01] backdrop-blur-md relative overflow-hidden select-none group ${
-                    isFiltered ? "opacity-25 scale-95" : "opacity-100 hover:border-orange-500/40 hover:shadow-[8px_8px_0px_rgba(249,115,22,0.08)]"
-                  }`}
-                >
-                  <span className="text-[10px] font-medium text-neutral-400 tracking-[0.2em] uppercase transition-colors duration-300 group-hover:text-orange-400">
-                    {category.title}
-                  </span>
-                  <h3 className="font-author text-2xl md:text-3xl text-white font-normal mt-4 transition-transform duration-300 group-hover:translate-x-1">
-                    {skill}
-                  </h3>
-                  <div className="absolute right-3 bottom-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <span className="font-mono text-xs text-orange-500 font-medium">✓</span>
-                  </div>
-                </div>
-              ));
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            {skillCategories.map((category, index) => {
+              const isLast = index === skillCategories.length - 1;
+              return (
+                <TechCard
+                  key={category.id}
+                  category={category}
+                  index={index}
+                  isLast={isLast}
+                />
+              );
             })}
           </div>
         </div>
 
       </section>
 
-      {/* â”€â”€ SECTION 03: INTERACTIVE RESUME & TIMELINE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── SECTION 03: INTERACTIVE RESUME & TIMELINE ───────────────────────── */}
       <section id="experience" className="relative grid grid-cols-1 lg:grid-cols-12 z-10">
         
         {/* Sticky Column Left */}
@@ -346,142 +729,104 @@ const About = () => {
 
         {/* Dynamic Content Right */}
         <div className="lg:col-span-8 p-8 md:p-16 grid grid-cols-1 xl:grid-cols-12 gap-12 select-text bg-black/40 backdrop-blur-md lg:border-l border-white/5">
-          {/* Column A: Timeline */}
-          <div className="xl:col-span-5 flex flex-col gap-12">
+          {/* Column A: Timeline, Achievements, Education */}
+          <div className="xl:col-span-7 flex flex-col gap-12">
             
-            {/* TIMELINE EXPERIENCES */}
-            <div>
-              <h3 className="text-xs font-medium text-neutral-400 tracking-[0.25em] uppercase mb-6 flex items-center">
+            {/* Professional Experience */}
+            <div className="flex flex-col gap-6">
+              <h3 className="text-xs font-medium text-neutral-400 tracking-[0.25em] uppercase flex items-center">
                 <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2" />
                 PROFESSIONAL EXPERIENCE
               </h3>
               
-              <div className="relative border-l border-white/5 pl-6 ml-2 flex flex-col gap-8">
+              <div className="relative flex flex-col gap-6">
+                {/* Glowing vertical timeline indicator line */}
+                <div className="absolute left-[6px] top-[28px] bottom-[28px] w-[1px] bg-gradient-to-b from-orange-500 via-orange-500/20 to-transparent z-0" />
+                <div className="absolute left-[4px] top-[28px] bottom-[28px] w-[4px] bg-gradient-to-b from-orange-500/10 via-transparent to-transparent blur-[2px] z-0 pointer-events-none" />
                 
-                {/* Job 1: EaseInfra */}
-                <div ref={timelineCardRef} className="relative transition-all duration-700 p-4 rounded-xl backdrop-blur-md border bg-white/[0.01] border-white/5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)]">
-                  <div ref={timelineDotRef} className="absolute -left-[31px] top-5.5 w-4 h-4 rounded-full border-2 bg-black transition-all duration-500 border-neutral-700" />
-                  <span className="text-[10px] font-medium text-neutral-400 tracking-wider">
-                    DEC 2025 – PRESENT · IN-OFFICE
-                  </span>
-                  <h4 ref={timelineTitleRef} className="font-author text-lg font-semibold mt-1 transition-colors duration-500 text-white">
-                    IT Intern
-                  </h4>
-                  <p className="text-xs font-semibold text-orange-400 tracking-wide">
-                    EaseInfra
-                  </p>
-                  <ul className="text-xs text-neutral-400 mt-3 flex flex-col gap-2 list-disc pl-4 leading-relaxed font-light">
-                    <li>Manage <strong className="text-neutral-200 font-medium">AWS EC2</strong>, VPC configs, and security groups.</li>
-                    <li>Configure <strong className="text-neutral-200 font-medium">OpenVPN</strong> secure admin gateways.</li>
-                    <li>Deploy Node.js microservices with <strong className="text-neutral-200 font-medium">PM2</strong>.</li>
-                    <li>Set CI/CD automation with <strong className="text-neutral-200 font-medium">Jenkins</strong>.</li>
-                    <li>Handle port conflict and DNS production debugging.</li>
-                  </ul>
-                </div>
+                <TimelineCard
+                  dates="DEC 2025 – PRESENT"
+                  locationInfo="IN-OFFICE"
+                  role="IT Intern"
+                  company="EaseInfra"
+                  bullets={[
+                    <React.Fragment key={1}>Manage <strong className="text-neutral-200 font-medium">AWS EC2</strong>, VPC configs, and security groups.</React.Fragment>,
+                    <React.Fragment key={2}>Configure <strong className="text-neutral-200 font-medium">OpenVPN</strong> secure admin gateways.</React.Fragment>,
+                    <React.Fragment key={3}>Deploy Node.js microservices with <strong className="text-neutral-200 font-medium">PM2</strong>.</React.Fragment>,
+                    <React.Fragment key={4}>Set CI/CD automation with <strong className="text-neutral-200 font-medium">Jenkins</strong>.</React.Fragment>,
+                    <React.Fragment key={5}>Handle port conflict and DNS production debugging.</React.Fragment>
+                  ]}
+                />
 
+                <TimelineCard
+                  dates="OCT 2024 – PRESENT"
+                  locationInfo="COLLEGE SOCIETY"
+                  role="Technical Head"
+                  company="Nexturn - The Internship Cell"
+                  bullets={[
+                    <React.Fragment key={1}>Lead the web engineering division to build, optimize, and maintain the main society web portal.</React.Fragment>,
+                    <React.Fragment key={2}>Conduct technical bootcamps on full-stack development and programming methodologies for 100+ students.</React.Fragment>,
+                    <React.Fragment key={3}>Direct online portal architectures to streamline registrations for annual internship drives.</React.Fragment>
+                  ]}
+                />
               </div>
             </div>
 
-            {/* ACHIEVEMENTS */}
-            <div>
-              <h3 className="text-xs font-medium text-neutral-400 tracking-[0.25em] uppercase mb-4 flex items-center">
+            {/* Achievements */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xs font-medium text-neutral-400 tracking-[0.25em] uppercase flex items-center">
                 <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2" />
                 ACHIEVEMENTS
               </h3>
-              <div ref={achievementsCardRef} className="border p-5 relative group transition-all duration-700 rounded-xl backdrop-blur-md border-white/5 bg-white/[0.01] text-neutral-400">
-                <span className="text-[10px] font-medium text-neutral-400 tracking-wider block">
-                  IIT JANAKPURI · HACKATHON WINNER
-                </span>
-                <h4 className="font-author text-sm font-semibold text-white mt-1">
-                  Winner, Matrix 3.0
-                </h4>
-                <p className="text-xs text-neutral-400 mt-2 leading-relaxed font-light">
-                  Clinched the 1st position at the prestigious 36-hour physical hackathon in Delhi. Explore my project profile on{" "}
-                  <a 
-                    href="https://matrix-3.devfolio.co/projects" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-orange-400 font-medium hover:underline"
-                  >
-                    Devfolio
-                  </a>.
-                </p>
-              </div>
+              <AchievementCard
+                category="IIT JANAKPURI · HACKATHON WINNER"
+                title="Winner, Matrix 3.0"
+                desc="Clinched the 1st position at the prestigious 36-hour physical hackathon in Delhi. Explore my project profile on"
+                linkText="Devfolio"
+                linkUrl="https://matrix-3.devfolio.co/projects"
+              />
             </div>
 
-            {/* EDUCATION */}
-            <div>
-              <h3 className="text-xs font-medium text-neutral-400 tracking-[0.25em] uppercase mb-4 flex items-center">
+            {/* Education */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xs font-medium text-neutral-400 tracking-[0.25em] uppercase flex items-center">
                 <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2" />
                 EDUCATION
               </h3>
-              <div className="flex flex-col gap-4 pl-2">
-                <div>
-                  <span className="text-[10px] font-medium text-neutral-400 tracking-wider">
-                    2023 – 2027 · ROHTAK
-                  </span>
-                  <h4 className="font-author text-sm font-semibold text-white mt-0.5">
-                    B.Tech in Computer Science
-                  </h4>
-                  <p className="text-xs text-neutral-400 font-light">
-                    Maharishi Dayanand University
-                  </p>
-                </div>
-                <div className="border-t border-white/5 pt-3">
-                  <span className="text-[10px] font-medium text-neutral-400 tracking-wider">
-                    COMPLETED MAY 2023 · NEW DELHI
-                  </span>
-                  <h4 className="font-author text-sm font-semibold text-white mt-0.5">
-                    Secondary &amp; Senior Secondary (CBSE)
-                  </h4>
-                  <p className="text-xs text-neutral-400 font-light">
-                    Andhra Education Society School
-                  </p>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <EducationCard
+                  dates="2023 – 2027"
+                  locationInfo="ROHTAK"
+                  degree="B.Tech in Computer Science"
+                  school="Maharishi Dayanand University"
+                />
+                <EducationCard
+                  dates="COMPLETED MAY 2023"
+                  locationInfo="NEW DELHI"
+                  degree="Secondary & Senior Secondary (CBSE)"
+                  school="Andhra Education Society School"
+                />
               </div>
             </div>
 
           </div>
 
-          {/* Column B: Resume Image */}
-          <div className="xl:col-span-7 flex flex-col gap-4">
+          {/* Column B: Sticky Resume */}
+          <div className="xl:col-span-5 flex flex-col gap-4 font-author xl:sticky xl:top-24 h-fit">
             <h3 className="text-xs font-medium text-neutral-400 tracking-[0.25em] uppercase mb-2 flex items-center font-author">
               <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2" />
               RESUME
             </h3>
 
-            {/* Resume image card — click to expand lightbox */}
-            <button
-              ref={resumeCardRef}
-              onClick={() => setResumeOpen(true)}
-              className="group relative w-full rounded-xl overflow-hidden border transition-all duration-700 text-left border-white/5 shadow-[12px_12px_0px_rgba(0,0,0,0.2)] hover:border-orange-500/50 hover:shadow-[0_12px_48px_rgba(249,115,22,0.15)] hover:scale-[1.01] cursor-pointer"
-              aria-label="View full resume"
-            >
-              <Image
-                src="/images/resume.jpg"
-                alt="Lovekesh Anand Resume"
-                width={794}
-                height={1123}
-                className="w-full h-auto block"
-                priority
-              />
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
-                <div className="w-12 h-12 rounded-full border border-orange-500/60 flex items-center justify-center bg-orange-500/10">
-                  <svg className="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                  </svg>
-                </div>
-                <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-orange-400">Click to expand</span>
-              </div>
-            </button>
+            {/* Resume Card Component */}
+            <ResumeCard onClick={() => setResumeOpen(true)} />
 
             {/* Open in new tab link */}
             <a
               href="https://drive.google.com/file/d/1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[11px] font-mono tracking-widest uppercase text-neutral-600 hover:text-orange-400 transition-colors duration-200 w-fit"
+              className="inline-flex items-center gap-2 text-xs font-mono tracking-widest uppercase text-neutral-500 hover:text-orange-400 transition-colors duration-200 w-fit mt-1 pl-1"
             >
               Open in new tab
               <svg className="w-3 h-3" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
@@ -525,7 +870,10 @@ const About = () => {
                   rel="noopener noreferrer"
                   className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 border border-white/20 text-[10px] font-mono tracking-widest uppercase text-neutral-300 hover:text-orange-400 hover:border-orange-500/40 transition-all duration-200"
                 >
-                  Open ↗
+                  Open
+                  <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
+                  </svg>
                 </a>
               </div>
             </div>

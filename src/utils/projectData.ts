@@ -21,7 +21,7 @@ export const projectsData: Project[] = [
       "A privacy-first, self-hosted legal drafting and document intelligence pipeline designed to operate 100% offline. Built defensively to support modern Indian legal codes (BNS, BNSS, BSA) with a custom OCR document ingestion pipeline.",
     tech: ["Python", "FastAPI", "llama.cpp", "SQLite", "PyMuPDF", "Tesseract OCR"],
     linkUrl: "https://github.com/LovekeshAnand/nyaya-ai",
-    linkText: "EXPLORE REPOSITORY // GITHUB",
+    linkText: "EXPLORE REPOSITORY / GITHUB",
     imageUrl: "/images/nyaya_ai.png",
     metrics: [
       { label: "LATENCY", value: "< 240ms" },
@@ -38,7 +38,7 @@ export const projectsData: Project[] = [
       "A robust client-facing issue tracker and priority management dashboard built to optimize QA cycles across staging instances. Integrates real-time state sync, high-efficiency caching, and automated email alerts on high-severity events.",
     tech: ["React.js", "Node.js", "Express.js", "MongoDB", "WebSockets", "Tailwind CSS"],
     linkUrl: "https://serviceflow-five.vercel.app/",
-    linkText: "LAUNCH APPLICATION // LIVE",
+    linkText: "LAUNCH APPLICATION / LIVE",
     imageUrl: "/images/serviceflow.png",
     metrics: [
       { label: "SYNC STATE", value: "< 5ms WS" },
@@ -55,7 +55,7 @@ export const projectsData: Project[] = [
       "A high-throughput OAuth2 / OpenID Connect authorization broker with encrypted session handshakes. Designed to support distributed client authentication across EaseInfra microservices.",
     tech: ["Go", "Redis", "PostgreSQL", "Docker", "JWT", "gRPC"],
     linkUrl: "https://github.com/LovekeshAnand/ease-auth",
-    linkText: "EXPLORE REPOSITORY // GITHUB",
+    linkText: "EXPLORE REPOSITORY / GITHUB",
     imageUrl: "/images/serviceflow.png",
     metrics: [
       { label: "THROUGHPUT", value: "8,500 req/s" },
@@ -72,7 +72,7 @@ export const projectsData: Project[] = [
       "An automated metrics daemon that scans cloud resources and queries security configs, generating network reachability topology graphs. Uses Prometheus to log resource utilization logs.",
     tech: ["Python", "Prometheus", "AWS SDK (Boto3)", "Grafana", "Linux Daemon"],
     linkUrl: "https://github.com/LovekeshAnand/vpc-telemetry",
-    linkText: "EXPLORE CODES // GITHUB",
+    linkText: "EXPLORE CODES / GITHUB",
     imageUrl: "/images/nyaya_ai.png",
     metrics: [
       { label: "POLL OVERHEAD", value: "< 0.05% CPU" },
@@ -89,7 +89,7 @@ export const projectsData: Project[] = [
       "A kernel-level traffic multiplexer and virtual SDN router implementing isolated secure tunneling. Configures dynamic traffic filters based on user clearance endpoints.",
     tech: ["WireGuard", "C", "Bash Scripting", "iptables", "Systemd"],
     linkUrl: "https://github.com/LovekeshAnand/pack-flow",
-    linkText: "EXPLORE ARCHITECTURE // GITHUB",
+    linkText: "EXPLORE ARCHITECTURE / GITHUB",
     imageUrl: "/images/serviceflow.png",
     metrics: [
       { label: "ENCRYPTION", value: "ChaCha20" },
@@ -106,7 +106,7 @@ export const projectsData: Project[] = [
       "A database optimizer layer that catches heavy client requests and intercepts query paths, re-routing static loads through indexed caching tables to preserve DB server memory limits.",
     tech: ["Node.js", "PostgreSQL", "Redis", "Prisma ORM", "Docker"],
     linkUrl: "https://github.com/LovekeshAnand/query-core",
-    linkText: "EXPLORE OPTIMIZER // GITHUB",
+    linkText: "EXPLORE OPTIMIZER / GITHUB",
     imageUrl: "/images/nyaya_ai.png",
     metrics: [
       { label: "QUERY LATENCY", value: "< 5ms" },
@@ -123,7 +123,7 @@ export const projectsData: Project[] = [
       "A lightweight CI/CD orchestration agent that pulls git commits and starts build pipelines in isolated container environments, validating endpoints before deploying live.",
     tech: ["Go", "Docker API", "React.js", "Jenkins", "WebSockets"],
     linkUrl: "https://github.com/LovekeshAnand/helix-deploy",
-    linkText: "LAUNCH CONSOLE // GITHUB",
+    linkText: "LAUNCH CONSOLE / GITHUB",
     imageUrl: "/images/serviceflow.png",
     metrics: [
       { label: "BUILD SPEED", value: "24s AVERAGE" },
@@ -140,7 +140,7 @@ export const projectsData: Project[] = [
       "A time-series buffer that collects massive metrics streams, parses columns in real-time, and batches write actions to ClickHouse database layers.",
     tech: ["Python", "ClickHouse", "InfluxDB", "Pandas", "gRPC"],
     linkUrl: "https://github.com/LovekeshAnand/chronos-db",
-    linkText: "EXPLORE PIPELINE // GITHUB",
+    linkText: "EXPLORE PIPELINE / GITHUB",
     imageUrl: "/images/nyaya_ai.png",
     metrics: [
       { label: "STREAM SPEED", value: "45,000 pts/s" },
@@ -157,7 +157,7 @@ export const projectsData: Project[] = [
       "A dashboard that displays bare-metal Kubernetes pod states, nodes availability, and cloud ingress paths using a high-performance visual dashboard system.",
     tech: ["Go", "Kubernetes API", "Next.js", "Tailwind CSS", "Recharts"],
     linkUrl: "https://github.com/LovekeshAnand/kube-orb",
-    linkText: "EXPLORE INTERFACE // GITHUB",
+    linkText: "EXPLORE INTERFACE / GITHUB",
     imageUrl: "/images/serviceflow.png",
     metrics: [
       { label: "POLLING DELAY", value: "500ms" },
@@ -174,7 +174,7 @@ export const projectsData: Project[] = [
       "A static assets caching proxy server built to intercept incoming resource calls, compress image formats, and cache headers dynamically close to user gateways.",
     tech: ["Rust", "Tokio", "WebP Image Converter", "HTTP/3 Client", "Cargo"],
     linkUrl: "https://github.com/LovekeshAnand/aether-cdn",
-    linkText: "EXPLORE PROXY // GITHUB",
+    linkText: "EXPLORE PROXY / GITHUB",
     imageUrl: "/images/nyaya_ai.png",
     metrics: [
       { label: "CONCURRENT CONN", value: "25,000+" },
@@ -191,7 +191,7 @@ export const projectsData: Project[] = [
       "A CI pipeline utility that scans Node.js packages and Python environments, parses CVE schemas, and generates compliance status reports.",
     tech: ["Python", "Trivy Scanner", "PostgreSQL", "GitHub Actions", "Docker"],
     linkUrl: "https://github.com/LovekeshAnand/sec-scan",
-    linkText: "EXPLORE ANALYZER // GITHUB",
+    linkText: "EXPLORE ANALYZER / GITHUB",
     imageUrl: "/images/serviceflow.png",
     metrics: [
       { label: "VULNERABILITY DB", value: "UPDATED DAILY" },
@@ -208,7 +208,7 @@ export const projectsData: Project[] = [
       "An automated firewall rate-limiting module integrated into NGINX pipelines, intercepting spam attacks and blocking malicious IP segments dynamically.",
     tech: ["Lua", "NGINX API", "Redis", "Linux Daemon", "iptables"],
     linkUrl: "https://github.com/LovekeshAnand/gatekeeper",
-    linkText: "EXPLORE MIDDLEWARE // GITHUB",
+    linkText: "EXPLORE MIDDLEWARE / GITHUB",
     imageUrl: "/images/nyaya_ai.png",
     metrics: [
       { label: "BLOCK RATE SPEED", value: "< 0.8ms" },
@@ -225,7 +225,7 @@ export const projectsData: Project[] = [
       "A real-time messaging pipeline using client-side WebCrypto encryption. Channels are managed by a rust gateway layer coordinating secure websocket connections.",
     tech: ["Rust", "WebSockets", "React.js", "WebCrypto API", "Tailwind CSS"],
     linkUrl: "https://github.com/LovekeshAnand/nexus-chat",
-    linkText: "LAUNCH APPLICATION // LIVE",
+    linkText: "LAUNCH APPLICATION / LIVE",
     imageUrl: "/images/serviceflow.png",
     metrics: [
       { label: "ENCRYPTION KEY", value: "AES-GCM-256" },
@@ -242,7 +242,7 @@ export const projectsData: Project[] = [
       "A data bus architecture designed to ingest server status logs, filter warnings, and store normalized records into Elasticsearch clusters for search indices.",
     tech: ["Go", "Apache Kafka", "Elasticsearch", "Logstash", "Docker"],
     linkUrl: "https://github.com/LovekeshAnand/log-vort",
-    linkText: "EXPLORE ENGINE // GITHUB",
+    linkText: "EXPLORE ENGINE / GITHUB",
     imageUrl: "/images/nyaya_ai.png",
     metrics: [
       { label: "INGESTION SPEED", value: "85,000 rec/s" },

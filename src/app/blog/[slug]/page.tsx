@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import { getPostBySlug, blogPosts } from "@/utils/blogData";
 import { notFound } from "next/navigation";
 
+import { Metadata } from "next";
+
 // Generate static params for all dynamic blog routes
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -14,6 +16,34 @@ export async function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+  if (!post) return {};
+
+  return {
+    title: post.title,
+    description: post.summary,
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
+    openGraph: {
+      type: "article",
+      title: `${post.title} | Lovekesh Anand`,
+      description: post.summary,
+      url: `https://lovekeshanand.com/blog/${slug}`,
+      images: [
+        {
+          url: "/images/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+  };
 }
 
 export default async function BlogPostDetailsPage({ params }: PageProps) {
@@ -48,7 +78,7 @@ export default async function BlogPostDetailsPage({ params }: PageProps) {
         {/* Back Link */}
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase text-neutral-500 hover:text-orange-400 transition-colors duration-200 mb-12 select-none"
+          className="inline-flex items-center gap-2 text-xs font-mono tracking-widest uppercase text-neutral-500 hover:text-orange-400 transition-colors duration-200 mb-12 select-none"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 8H3M7 12L3 8l4-4" />
@@ -59,13 +89,13 @@ export default async function BlogPostDetailsPage({ params }: PageProps) {
         {/* Article Metadata */}
         <article className="font-author">
           <header className="mb-10 pb-8 border-b border-white/10 select-none">
-            <span className="font-mono text-[9px] font-bold text-orange-500 tracking-[0.25em] uppercase block mb-3">
+            <span className="font-mono text-xs font-bold text-orange-500 tracking-[0.25em] uppercase block mb-3">
               {post.category}
             </span>
             <h1 className="text-3.5xl md:text-5xl font-semibold leading-tight tracking-tight text-white mb-6">
               {post.title}
             </h1>
-            <div className="flex items-center gap-3 font-mono text-[9px] text-neutral-500 tracking-wider">
+            <div className="flex items-center gap-3 font-mono text-xs text-neutral-500 tracking-wider">
               <span>PUBLISHED // {post.publishDate}</span>
               <span>·</span>
               <span>READ DURATION // {post.readTime}</span>

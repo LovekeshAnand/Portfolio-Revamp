@@ -35,8 +35,8 @@ const socialLinks = [
 const contactDetails = [
   {
     label: "Email",
-    value: "lovekeshanand6@email.com",
-    href: "mailto:lovekeshanand6@email.com",
+    value: "lovekeshanand6@gmail.com",
+    href: "mailto:lovekeshanand6@gmail.com",
   },
   {
     label: "Phone",
@@ -46,60 +46,99 @@ const contactDetails = [
 ];
 
 const Footer = () => {
-
   return (
-    <footer className="relative bg-[#080808] text-white overflow-hidden">
+    <footer className="relative bg-[#050505] text-white overflow-hidden border-t border-white/[0.01]">
+      
+      {/* Dynamic letter-hover styles for the watermark */}
+      <style>{`
+        .watermark-letter {
+          background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          cursor: default;
+          display: inline-block;
+        }
+        .watermark-letter:hover {
+          background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          transform: scale(1.08) translateY(-8px);
+          filter: drop-shadow(0px 0px 15px rgba(249, 115, 22, 0.8));
+        }
+      `}</style>
+
+      {/* Cyberpunk background grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.005)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.005)_1px,transparent_1px)] bg-[size:32px_32px] opacity-40 pointer-events-none" />
+      <div className="absolute top-[-50%] left-[-10%] w-[120%] h-[200%] bg-[radial-gradient(ellipse_at_top,rgba(249,115,22,0.015),transparent_60%)] pointer-events-none" />
 
       {/* ── Top border accent ── */}
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
+      <div className="relative w-full h-[1px] bg-gradient-to-r from-transparent via-orange-500/25 to-transparent">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500/10 to-transparent blur-[1.5px]" />
+      </div>
 
       {/* ── Main footer body ── */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-0">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-14 pb-0 select-none">
 
-        {/* ── Three-column content grid ── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-10">
+        {/* ── Three-column content grid with asymmetric widths ── */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 mb-12">
 
-          {/* Column 1: About blurb */}
-          <div className="flex flex-col gap-5">
-            <h3 className="text-[10px] font-mono font-semibold tracking-[0.3em] uppercase text-orange-400/80">
+          {/* Column 1: About (Spans 5 cols) */}
+          <div className="md:col-span-5 flex flex-col gap-6">
+            <h3 className="text-sm font-mono font-semibold tracking-[0.3em] uppercase text-orange-400/80">
               About
             </h3>
-            <p className="text-sm text-neutral-400 leading-relaxed font-author font-light">
+            <p className="text-base text-neutral-300 leading-relaxed font-author font-light max-w-sm select-text">
               Full-stack engineer crafting resilient architectures and
               fluid interfaces. Focused on performance, scalability, and
               the details that ship great products.
             </p>
-            {/* Social links */}
-            <div className="flex items-center gap-3 mt-1">
-              {socialLinks.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="group flex items-center justify-center w-9 h-9 rounded-full border border-white/10 text-neutral-400 transition-all duration-300 hover:border-orange-500/50 hover:text-orange-400 hover:bg-orange-500/5 hover:scale-110"
-                >
-                  {s.icon}
-                </a>
-              ))}
+            {/* Social links & Resume */}
+            <div className="flex flex-wrap items-center gap-4 mt-1">
+              <div className="flex items-center gap-3">
+                {socialLinks.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="group flex items-center justify-center w-8.5 h-8.5 rounded-xl border border-white/5 bg-white/[0.01] text-neutral-400 transition-all duration-300 hover:border-orange-500/50 hover:text-orange-400 hover:bg-orange-500/5 hover:scale-105"
+                  >
+                    {s.icon}
+                  </a>
+                ))}
+              </div>
+              <a
+                href="https://drive.google.com/file/d/1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-orange-500/35 bg-orange-500/5 text-orange-400 text-xs font-mono tracking-widest uppercase hover:bg-orange-500 hover:text-black hover:border-orange-500 hover:shadow-[0_0_15px_rgba(249,115,22,0.2)] transition-all duration-300 w-fit"
+              >
+                View Résumé
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
+                </svg>
+              </a>
             </div>
           </div>
 
-          {/* Column 2: Contact */}
-          <div className="flex flex-col gap-5">
-            <h3 className="text-[10px] font-mono font-semibold tracking-[0.3em] uppercase text-orange-400/80">
+          {/* Column 2: Contact (Spans 4 cols) */}
+          <div className="md:col-span-4 flex flex-col gap-6 select-text">
+            <h3 className="text-sm font-mono font-semibold tracking-[0.3em] uppercase text-orange-400/80 select-none">
               Contact
             </h3>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
               {contactDetails.map((c) => (
-                <div key={c.label}>
-                  <p className="text-[9px] font-mono tracking-widest uppercase text-neutral-600 mb-1">
+                <div key={c.label} className="group">
+                  <p className="text-xs font-mono tracking-widest uppercase text-neutral-500 mb-1.5 select-none transition-colors duration-300 group-hover:text-orange-400/70">
                     {c.label}
                   </p>
                   <a
                     href={c.href}
-                    className="text-sm text-neutral-300 font-author hover:text-orange-400 transition-colors duration-200"
+                    className="text-base text-neutral-200 font-mono hover:text-orange-400 transition-colors duration-200 block truncate"
                   >
                     {c.value}
                   </a>
@@ -108,81 +147,65 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Column 3: Quick Links */}
-          <div className="flex flex-col gap-5">
-            <h3 className="text-[10px] font-mono font-semibold tracking-[0.3em] uppercase text-orange-400/80">
+          {/* Column 3: Navigate (Spans 3 cols) */}
+          <div className="md:col-span-3 flex flex-col gap-6">
+            <h3 className="text-sm font-mono font-semibold tracking-[0.3em] uppercase text-orange-400/80">
               Navigate
             </h3>
             <nav className="flex flex-col gap-3">
               {[
-                { label: "Home", href: "#home" },
-                { label: "About", href: "#about" },
-                { label: "Experience", href: "#experience" },
-                { label: "Projects", href: "#projects" },
-                { label: "Contact", href: "#contact" },
+                { label: "Home", href: "/#home" },
+                { label: "About", href: "/#about" },
+                { label: "Experience", href: "/#experience" },
+                { label: "Projects", href: "/projects" },
+                { label: "Contact", href: "/contact" },
               ].map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="group flex items-center gap-2 text-sm text-neutral-400 font-author hover:text-white transition-colors duration-200 w-fit"
+                  className="group flex items-center gap-2.5 text-base text-neutral-300 font-author hover:text-white transition-all duration-300 w-fit transform hover:translate-x-1"
                 >
-                  <span className="w-4 h-px bg-neutral-700 group-hover:w-6 group-hover:bg-orange-500 transition-all duration-300" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-orange-500 group-hover:shadow-[0_0_8px_rgba(249,115,22,0.8)] transition-all duration-300" />
                   {link.label}
                 </a>
               ))}
             </nav>
-            <a
-              href="https://drive.google.com/file/d/1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G/view?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 text-orange-400 text-[11px] font-mono tracking-widest uppercase hover:bg-orange-500/10 hover:border-orange-500/60 transition-all duration-200 w-fit"
-            >
-              View Résumé ↗
-            </a>
           </div>
 
         </div>
 
         {/* ── Bottom bar ── */}
-        <div className="py-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[10px] font-mono tracking-widest uppercase text-neutral-600">
+        <div className="py-5 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-4 select-text">
+          <p className="text-xs sm:text-sm font-mono tracking-widest uppercase text-neutral-500">
             © 2026 Lovekesh Anand · All rights reserved
           </p>
-          <div className="flex items-center gap-6">
-            {socialLinks.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] font-mono tracking-widest uppercase text-neutral-600 hover:text-orange-400 transition-colors duration-200"
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
-          <p className="text-[10px] font-mono tracking-widest uppercase text-neutral-700">
+          <p className="text-xs sm:text-sm font-mono tracking-widest uppercase text-neutral-600 select-none">
             Built with Next.js &amp; ❤
           </p>
         </div>
 
       </div>
 
-      {/* ── Giant name watermark — bottom stamp ── */}
-      <div className="w-full overflow-hidden">
+      {/* ── Giant name watermark — bottom stamp with individual letter hover controls ── */}
+      <div className="w-full overflow-hidden border-t border-white/[0.01] pt-6 pb-2 select-none flex justify-center">
         <h2
-          className="font-[family-name:var(--font-bebas)] leading-none text-center select-none uppercase"
+          className="font-[family-name:var(--font-bebas)] leading-none text-center select-none uppercase tracking-[0.05em] flex justify-center gap-x-2 sm:gap-x-4 flex-wrap"
           style={{
-            fontSize: "clamp(5rem, 18vw, 16rem)",
-            background: "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            letterSpacing: "0.03em",
+            fontSize: "clamp(3.5rem, 13.5vw, 13.5rem)",
             lineHeight: 0.88,
           }}
         >
-          LOVEKESH ANAND
+          {Array.from("LOVEKESH ANAND").map((char, idx) => (
+            <span
+              key={idx}
+              className="watermark-letter"
+              style={{
+                width: char === " " ? "0.3em" : "auto",
+              }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
         </h2>
       </div>
 
@@ -191,4 +214,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

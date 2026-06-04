@@ -179,3 +179,26 @@ body::before {
   mask-image: radial-gradient(circle at center, black 65%, rgba(0, 0, 0, 0.15) 100%);
   WebkitMaskImage: radial-gradient(circle at center, black 65%, rgba(0, 0, 0, 0.15) 100%);
 }
+
+/* ─── Global scaling overrides to improve text legibility across the site ─── */
+[class*="text-[9px]"], .text-\[9px\] {
+  font-size: 12px !important;
+}
+[class*="text-[10px]"], .text-\[10px\] {
+  font-size: 13px !important;
+}
+[class*="text-[11px]"], .text-\[11px\] {
+  font-size: 13.5px !important;
+}
+[class*="text-xs"], .text-xs {
+  font-size: 14.5px !important;
+}
+[class*="text-sm"], .text-sm {
+  font-size: 16px !important;
+}
+[class*="text-base"], .text-base {
+  font-size: 18px !important;
+}
+[class*="text-lg"], .text-lg {
+  font-size: 20px !important;
+}

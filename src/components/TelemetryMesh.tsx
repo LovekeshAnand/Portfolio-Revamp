@@ -42,9 +42,9 @@ const COMMANDS: Record<string, TermLine[]> = {
     { type: "blank", text: "" },
   ],
   "contact": [
-    { type: "out", text: "Email   : lovekeshanand.dev@gmail.com" },
-    { type: "out", text: "GitHub  : github.com/lovekeshanand" },
-    { type: "out", text: "LinkedIn: linkedin.com/in/lovekeshanand" },
+    { type: "out", text: "Email   : lovekeshanand6@gmail.com" },
+    { type: "out", text: "GitHub  : github.com/LovekeshAnand" },
+    { type: "out", text: "LinkedIn: linkedin.com/in/lovekesh-anand-443138318" },
     { type: "blank", text: "" },
   ],
   "download-resume": [
@@ -74,9 +74,12 @@ const TelemetryMesh = () => {
   const [inputVal,  setInputVal]    = useState("");
   const [isTyping,  setIsTyping]    = useState(false);
   const [cursorOn,  setCursorOn]    = useState(true);
+  const [isFocused, setIsFocused]   = useState(false);
   const termBodyRef = useRef<HTMLDivElement>(null);
 
-
+  // Command History Navigation
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
   // Compass rotation scroll inertia
   const compassRef = useRef<HTMLDivElement>(null);
@@ -133,30 +136,86 @@ const TelemetryMesh = () => {
     }
   }, [termLines]);
 
-  // ── Typewrite helper ───────────────────────────────────────────────────
-  const typeCommand = (cmd: string, onDone?: () => void) => {
+  // ── Auto-type simulation for chips ─────────────────────────────────────
+  const typeCommand = (cmd: string) => {
+    if (isTyping) return;
     setIsTyping(true);
+    setInputVal("");
+    inputRef.current?.focus();
     let i = 0;
-    // first add an empty cmd line to fill character by character
-    setTermLines(prev => [...prev, { type: "cmd", text: "" }]);
     const iv = setInterval(() => {
       i++;
-      setTermLines(prev => {
-        const copy = [...prev];
-        copy[copy.length - 1] = { type: "cmd", text: cmd.slice(0, i) };
-        return copy;
-      });
+      setInputVal(cmd.slice(0, i));
       if (i >= cmd.length) {
         clearInterval(iv);
-        // append output lines
         setTimeout(() => {
-          const output = COMMANDS[cmd] ?? [{ type: "error" as const, text: `command not found: ${cmd}` }, { type: "blank", text: "" }];
-          setTermLines(prev => [...prev, ...output]);
+          setInputVal("");
           setIsTyping(false);
-          onDone?.();
+          // Add to history
+          setHistory(prev => [...prev, cmd]);
+          setHistoryIndex(-1);
+          executeCommand(cmd);
         }, 220);
       }
-    }, 55);
+    }, 45);
+  };
+
+  // ── Execute command immediately ────────────────────────────────────────
+  const executeCommand = (cmd: string) => {
+    const raw = cmd.trim().toLowerCase().replace(/\s+/g, "-");
+    
+    // Add command line
+    setTermLines(prev => [...prev, { type: "cmd", text: cmd }]);
+    
+    if (raw === "clear") {
+      setTermLines([
+        { type: "out", text: "PORTFOLIO OS [Version 2.1.0]" },
+        { type: "out", text: "(c) 2026 Lovekesh Anand. All rights reserved." },
+        { type: "blank", text: "" },
+        { type: "out", text: "Available commands:" },
+        { type: "out", text: "  whoami           — Identity & overview" },
+        { type: "out", text: "  skills           — Technical stack" },
+        { type: "out", text: "  experience       — Work & projects" },
+        { type: "out", text: "  contact          — Reach me" },
+        { type: "out", text: "  download-resume  — View/Get resume document" },
+        { type: "out", text: "  clear            — Clear terminal screen" },
+        { type: "blank", text: "" },
+        { type: "out", text: "Type a command below to begin." },
+        { type: "blank", text: "" },
+      ]);
+      return;
+    }
+
+    if (raw === "download-resume") {
+      // Trigger direct download
+      const a = document.createElement("a");
+      a.href = "https://drive.google.com/uc?export=download&id=1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G";
+      a.download = "LovekeshAnand_Resume.pdf";
+      a.click();
+      
+      // Open viewer in a new tab
+      window.open("https://drive.google.com/file/d/1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G/view?usp=sharing", "_blank", "noopener,noreferrer");
+    }
+
+    setIsTyping(true);
+    setTimeout(() => {
+      let output: TermLine[] = [];
+      if (raw === "sudo") {
+        output = [
+          { type: "error", text: "guest is not in the sudoers file. This incident will be reported." },
+          { type: "blank", text: "" },
+        ];
+      } else if (COMMANDS[raw]) {
+        output = COMMANDS[raw];
+      } else {
+        output = [
+          { type: "error", text: `command not found: ${raw}. Type 'help' for options.` },
+          { type: "blank", text: "" },
+        ];
+      }
+      setTermLines(prev => [...prev, ...output]);
+      setIsTyping(false);
+    }, 150);
   };
 
   // ── Initialize terminal with welcome & commands description ───────────
@@ -181,44 +240,51 @@ const TelemetryMesh = () => {
   // ── Handle user-typed commands ─────────────────────────────────────────
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const raw = inputVal.trim().toLowerCase().replace(/\s+/g, "-");
+    if (isTyping) return;
+    const raw = inputVal.trim();
     if (!raw) return;
     setInputVal("");
-    if (raw === "clear") {
-      setTermLines([
-        { type: "out", text: "PORTFOLIO OS [Version 2.1.0]" },
-        { type: "out", text: "(c) 2026 Lovekesh Anand. All rights reserved." },
-        { type: "blank", text: "" },
-        { type: "out", text: "Available commands:" },
-        { type: "out", text: "  whoami           — Identity & overview" },
-        { type: "out", text: "  skills           — Technical stack" },
-        { type: "out", text: "  experience       — Work & projects" },
-        { type: "out", text: "  contact          — Reach me" },
-        { type: "out", text: "  download-resume  — View/Get resume document" },
-        { type: "out", text: "  clear            — Clear terminal screen" },
-        { type: "blank", text: "" },
-        { type: "out", text: "Type a command below to begin." },
-        { type: "blank", text: "" },
-      ]);
-      return;
-    }
-    if (raw === "download-resume") {
-      typeCommand("download-resume", () => {
-        // Trigger direct download
-        const a = document.createElement("a");
-        a.href = "https://drive.google.com/uc?export=download&id=1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G";
-        a.download = "LovekeshAnand_Resume.pdf";
-        a.click();
-        
-        // Open viewer in a new tab
-        window.open("https://drive.google.com/file/d/1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G/view?usp=sharing", "_blank", "noopener,noreferrer");
-      });
-      return;
-    }
-    typeCommand(raw);
+
+    // Add to history
+    setHistory(prev => [...prev, raw]);
+    setHistoryIndex(-1);
+
+    executeCommand(raw);
   };
 
+  // ── Keyboard key navigation ───────────────────────────────────────────
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isTyping) return;
 
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (history.length === 0) return;
+      const nextIdx = historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1);
+      setHistoryIndex(nextIdx);
+      setInputVal(history[nextIdx]);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (historyIndex === -1) return;
+      const nextIdx = historyIndex + 1;
+      if (nextIdx >= history.length) {
+        setHistoryIndex(-1);
+        setInputVal("");
+      } else {
+        setHistoryIndex(nextIdx);
+        setInputVal(history[nextIdx]);
+      }
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      const current = inputVal.trim().toLowerCase();
+      if (!current) return;
+      
+      const available = [...Object.keys(COMMANDS), "clear", "help"];
+      const match = available.find(cmd => cmd.startsWith(current));
+      if (match) {
+        setInputVal(match);
+      }
+    }
+  };
 
   return (
     <div 
@@ -234,7 +300,7 @@ const TelemetryMesh = () => {
           animation: terminalBlink 1.2s step-end infinite;
         }
       `}} />
-      {/* â”€â”€ Subtle warm orange grid matrix backdrop matching the design system â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Subtle warm orange grid matrix backdrop matching the design system ── */}
       <div 
         className="absolute inset-0 z-0 pointer-events-none opacity-20"
         style={{
@@ -256,7 +322,7 @@ const TelemetryMesh = () => {
           <h2 className="font-author text-5xl md:text-6.5vw xl:text-6rem font-normal tracking-tight text-white leading-[1.05]">
             Engineering <br /><em className="italic font-serif text-orange-400">Matrix</em>
           </h2>
-          <p className="font-author text-sm text-neutral-400 font-normal mt-4 leading-relaxed max-w-xs">
+          <p className="font-author text-base text-neutral-400 font-normal mt-4 leading-relaxed max-w-xs">
             An interactive dashboard mapping structural systems infrastructure, AWS topology orbits, and coordinate-sensitive physics wave guides.
           </p>
         </div>
@@ -272,17 +338,17 @@ const TelemetryMesh = () => {
               <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
               <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
               <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
-              <span className="text-[9px] text-neutral-600 tracking-[0.25em] uppercase font-medium ml-3">
+              <span className="text-[11px] text-neutral-500 tracking-[0.25em] uppercase font-medium ml-3">
                 lovekesh@portfolio — bash
               </span>
               {/* Quick command chips */}
-              <div className="ml-auto flex items-center gap-1.5">
+              <div className="ml-auto flex items-center gap-1.5 flex-wrap">
                 {["whoami","skills","experience","contact"].map(cmd => (
                   <button
                     key={cmd}
                     disabled={isTyping}
                     onClick={() => { if (!isTyping) typeCommand(cmd); }}
-                    className="px-2 py-0.5 rounded border border-white/[0.07] text-[8px] text-neutral-500 hover:border-orange-500/40 hover:text-orange-400 transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed uppercase tracking-wider"
+                    className="px-2 py-0.5 rounded border border-white/[0.07] text-[10px] text-neutral-500 hover:border-orange-500/40 hover:text-orange-400 transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed uppercase tracking-wider"
                   >
                     {cmd}
                   </button>
@@ -291,18 +357,9 @@ const TelemetryMesh = () => {
                   disabled={isTyping}
                   onClick={() => {
                     if (isTyping) return;
-                    typeCommand("download-resume", () => {
-                      // Trigger direct download
-                      const a = document.createElement("a");
-                      a.href = "https://drive.google.com/uc?export=download&id=1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G";
-                      a.download = "LovekeshAnand_Resume.pdf";
-                      a.click();
-
-                      // Open viewer in a new tab
-                      window.open("https://drive.google.com/file/d/1gKwpedTgHwuZIb7bj-DC8d_NZeWecg4G/view?usp=sharing", "_blank", "noopener,noreferrer");
-                    });
+                    typeCommand("download-resume");
                   }}
-                  className="px-2 py-0.5 rounded border border-orange-500/30 text-[8px] text-orange-400 hover:bg-orange-500/10 transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed uppercase tracking-wider"
+                  className="px-2 py-0.5 rounded border border-orange-500/30 text-[10px] text-orange-400 hover:bg-orange-500/10 transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed uppercase tracking-wider"
                 >
                   download-resume
                 </button>
@@ -321,9 +378,6 @@ const TelemetryMesh = () => {
                   <div key={i} className="flex items-center gap-2">
                     <span className="text-orange-500 shrink-0">❯</span>
                     <span className="text-white">{line.text}</span>
-                    {i === termLines.length - 1 && isTyping && (
-                      <span className={`inline-block w-[7px] h-[13px] bg-orange-500 ml-0.5 transition-opacity duration-75 ${cursorOn ? "opacity-100" : "opacity-0"}`} />
-                    )}
                   </div>
                 );
                 if (line.type === "error") return (
@@ -333,107 +387,61 @@ const TelemetryMesh = () => {
                   <div key={i} className="text-neutral-400 pl-5 leading-[1.6]">{line.text}</div>
                 );
               })}
-              {/* Ready for input */}
             </div>
 
             {/* Input row */}
             <form
               onSubmit={handleSubmit}
               className="relative flex items-center gap-3 px-5 py-3 border-t border-white/[0.06] bg-white/[0.015] shrink-0 cursor-text"
-              onClick={() => inputRef.current?.focus()}
             >
               <span className="text-orange-500 text-[13px] shrink-0 select-none">❯</span>
               
               {/* Custom Display Area with Custom Blinking Cursor */}
               <div className="flex-1 flex items-center font-mono text-xs text-white pointer-events-none select-none relative overflow-hidden h-[18px]">
                 {inputVal ? (
-                  <span>{inputVal}</span>
+                  <div className="flex items-center">
+                    <span>{inputVal}</span>
+                    {isFocused ? (
+                      <span className={`inline-block w-[7px] h-[13px] bg-orange-500/80 ml-0.5 ${cursorOn ? "opacity-100" : "opacity-0"}`} />
+                    ) : (
+                      <span className="inline-block w-[7px] h-[13px] border border-neutral-700 ml-0.5" />
+                    )}
+                  </div>
                 ) : (
-                  <span className="text-neutral-700">type a command...</span>
+                  <div className="relative flex items-center w-full h-full">
+                    {/* Active/Inactive cursor overlaying first character 't' */}
+                    {isFocused ? (
+                      <span className={`absolute left-0 w-[7px] h-[13px] bg-orange-500/80 ${cursorOn ? "opacity-100" : "opacity-0"} z-10`} />
+                    ) : (
+                      <span className="absolute left-0 w-[7px] h-[13px] border border-neutral-700 z-10" />
+                    )}
+                    {/* Placeholder text */}
+                    <span className="text-neutral-700 relative z-0">type a command...</span>
+                  </div>
                 )}
-                {/* Custom Blinking Cursor - constantly blinking */}
-                <span className="inline-block w-[7px] h-[13px] bg-orange-500/80 ml-1 animate-terminal-blink" />
               </div>
 
-              {/* Invisible native input for input capture */}
+              {/* Invisible native input for input capture - stretched to cover entire container for click reliability */}
               <input
                 ref={inputRef}
                 type="text"
                 value={inputVal}
                 disabled={isTyping}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
                 onChange={e => setInputVal(e.target.value)}
-                className="absolute inset-y-0 left-12 right-20 bg-transparent text-transparent outline-none border-none caret-transparent"
+                onKeyDown={handleKeyDown}
+                className="absolute inset-0 w-full h-full bg-transparent text-transparent outline-none border-none caret-transparent z-20 cursor-text"
                 autoComplete="off"
                 spellCheck={false}
               />
-              <span className="text-[8px] text-neutral-700 tracking-widest uppercase hidden sm:block select-none">↵ enter</span>
+              <span className="text-[10px] text-neutral-700 tracking-widest uppercase hidden sm:block select-none z-30 pointer-events-none">↵ enter</span>
             </form>
           </div>
 
-          {/* CELL 2: Core Metrics Orb (col-span-4) */}
-          <div className="telemetry-bento-cell md:col-span-4 border border-white/[0.08] rounded-2xl bg-[#0a0a0a] p-5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] flex flex-col h-[280px] overflow-hidden">
-            <span className="text-[8px] font-mono text-neutral-600 tracking-[0.25em] uppercase font-medium mb-3 select-none">
-              MATRIX // CORE ORBITAL LOAD
-            </span>
-            <div className="flex-1 flex items-center justify-center relative">
-              <svg className="w-28 h-28" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
-                <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
-                <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="1" />
-                
-                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(249,115,22,0.15)" strokeWidth="1.5"
-                        strokeDasharray="251" strokeDashoffset="140" className="animate-[spin_10s_linear_infinite]" style={{ transformOrigin: "50% 50%" }} />
-                <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(251,191,36,0.2)" strokeWidth="1.5"
-                        strokeDasharray="188" strokeDashoffset="65" className="animate-[spin_5s_linear_infinite_reverse]" style={{ transformOrigin: "50% 50%" }} />
-                <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(249,115,22,0.3)" strokeWidth="2"
-                        strokeDasharray="125" strokeDashoffset="35" className="animate-[spin_2.5s_linear_infinite]" style={{ transformOrigin: "50% 50%" }} />
-                
-                <circle cx="50" cy="50" r="3.5" fill="#f97316" className="animate-pulse" />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center font-mono select-none">
-                <span className="text-[12px] text-white font-bold mt-1">48.2%</span>
-                <span className="text-[7px] text-neutral-500 uppercase tracking-widest mt-0.5">SYS MEM LOAD</span>
-              </div>
-            </div>
-            <div className="flex justify-between font-mono text-[8px] text-neutral-500 pt-2.5 border-t border-white/[0.04] select-none">
-              <span>CORES // 8 ACTIVE</span>
-              <span className="text-orange-400">THREAD SECURE</span>
-            </div>
-          </div>
 
-          {/* CELL 3: AWS Node Telemetry (col-span-8) */}
-          <div className="telemetry-bento-cell md:col-span-8 border border-white/[0.08] rounded-2xl bg-[#0a0a0a] p-5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] flex flex-col h-[280px] overflow-hidden">
-            <div className="flex items-center justify-between mb-4 select-none">
-              <span className="text-[8px] font-mono text-neutral-600 tracking-[0.25em] uppercase font-medium">
-                AWS // TOPOLOGY PORT MATRIX
-              </span>
-              <span className="px-2 py-0.5 rounded border border-green-500/20 bg-green-500/5 text-[7px] font-mono text-green-400 uppercase tracking-wider">
-                ACTIVE STATE
-              </span>
-            </div>
-            
-            <div className="flex-1 grid grid-cols-2 gap-3 font-mono text-[9px] text-neutral-400 select-none">
-              {[
-                { label: "JENKINS RUNNERS", status: "ONLINE", value: "3/3 EXEC IDLE", color: "text-green-400" },
-                { label: "OPENVPN GATEWAY", status: "ESTABLISHED", value: "14.2 ms LATENCY", color: "text-green-400" },
-                { label: "DOCKER RUNNERS", status: "SANDBOXED", value: "12 CONTAINERS", color: "text-orange-400" },
-                { label: "DB GATE QUERY", status: "OPTIMIZED", value: "PORT 5432 (PG)", color: "text-orange-400" }
-              ].map(node => (
-                <div key={node.label} className="border border-white/[0.04] bg-white/[0.01] p-3 rounded-lg flex flex-col justify-between hover:border-orange-500/25 transition-colors duration-300">
-                  <span className="text-neutral-500 text-[8px] uppercase tracking-wider">{node.label}</span>
-                  <div className="flex items-end justify-between mt-2">
-                    <span className="text-white text-[10px] font-semibold">{node.value}</span>
-                    <span className={`text-[7px] font-bold ${node.color}`}>{node.status}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
 
-            <div className="flex items-center justify-between font-mono text-[7px] text-neutral-500 pt-3 border-t border-white/[0.04] mt-2 select-none">
-              <span>VPN_ENC // AES_256_CBC</span>
-              <span>Uptime: 99.982%</span>
-            </div>
-          </div>
+
 
         </div>
 
