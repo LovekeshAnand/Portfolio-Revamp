@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+/* ─── Manual @font-face registrations for local Author font ─── */
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-Extralight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-ExtralightItalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-MediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-SemiboldItalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Author';
+  src: url('/fonts/Author-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ─── Register premium fonts as Tailwind font tokens ─────────────────── */
+@theme {
+  --font-bebas: var(--font-bebas);
+
+  --animate-aurora: aurora 60s linear infinite;
+  --animate-word-reveal: wordReveal 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-marquee: marquee 26s linear infinite;
+
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+
+  @keyframes wordReveal {
+    from {
+      opacity: 0;
+      transform: translateY(45px) scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+/* ─── Force dark theme & global styling ────────────────── */
+:root {
+  color-scheme: dark;
+  --white: #ffffff;
+  --black: #000000;
+  --transparent: transparent;
+  --orange-500: #f97316;
+  --orange-400: #fb923c;
+  --orange-600: #ea580c;
+}
+
+/* Sleek Cyberpunk Scrollbar styling */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #070707;
+}
+::-webkit-scrollbar-thumb {
+  background: #f97316;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ea580c;
+}
+
+/* ─── Base ─────────────────────────────────────────────────────── */
+body {
+  background: #070707;
+  color: #f5f5f5;
+  position: relative;
+}
+
+/* ─── Custom Font-Author utility class ─── */
+.font-author {
+  font-family: 'Author', serif !important;
+}
+
+/* Global Subtle Warm Orange Matrix Grid Backdrop */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(249, 115, 22, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(249, 115, 22, 0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at center, black 65%, rgba(0, 0, 0, 0.15) 100%);
+  WebkitMaskImage: radial-gradient(circle at center, black 65%, rgba(0, 0, 0, 0.15) 100%);
+}

@@ -1,0 +1,169 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import TextMarquee from "@/components/TextMarquee";
+import HeroBento from "@/components/HeroBento";
+import Preloader from "@/components/Preloader";
+import TelemetryMesh from "@/components/TelemetryMesh";
+import About from "@/components/About";
+import Projects from "@/components/Projects";
+import ContactForm from "@/components/ContactForm";
+import Footer from "@/components/Footer";
+
+export default function Home() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const ghostPathRef = useRef<SVGPathElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Monitor screen width to safely disable heavy scroll listeners on mobile
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Track scroll progress across Hero and About sections (approx. 3.5x viewport height total)
+  useEffect(() => {
+    if (typeof window === "undefined" || isMobile || isLoading) return;
+
+    // Initialize path length once the SVG path is rendered in the DOM
+    if (pathRef.current) {
+      const length = pathRef.current.getTotalLength() || 2800;
+      pathRef.current.style.strokeDasharray = `${length}`;
+      pathRef.current.style.strokeDashoffset = `${length}`;
+    }
+    if (ghostPathRef.current) {
+      const length = ghostPathRef.current.getTotalLength() || 2800;
+      ghostPathRef.current.style.strokeDasharray = `${length}`;
+      ghostPathRef.current.style.strokeDashoffset = `${length}`;
+    }
+
+    const handleScroll = () => {
+      if (!pageRef.current) return;
+      const viewportHeight = window.innerHeight;
+      
+      // 1. Calculate About progress for highlights (accounting for Hero section offset of 0.2 viewport)
+      const scrollY = window.scrollY;
+      const aboutStart = viewportHeight * 0.2;
+      const aboutDuration = viewportHeight * 3.3;
+      const aboutProgress = (scrollY - aboutStart) / aboutDuration;
+      const clampedAboutProgress = Math.max(0, Math.min(1, aboutProgress));
+      setScrollProgress(clampedAboutProgress);
+
+      // 2. Calculate Global scroll progress and target tip Y-coordinate to keep the drawing tip at the middle/lower screen
+      const scrollHeight = document.documentElement.scrollHeight || 4000;
+      
+      const maxScrollable = scrollHeight - viewportHeight;
+      const globalProgress = maxScrollable > 0 ? scrollY / maxScrollable : 0;
+      const clampedGlobalProgress = Math.max(0, Math.min(1, globalProgress));
+
+      // Interpolate the target drawing Y coordinate.
+      // If scrollY is 0, the line is fully hidden.
+      // As scroll begins, the line enters from the very top and slides to the center over the first 300px of scroll.
+      let progressInPath = 0;
+      if (scrollY > 0) {
+        const transitionDistance = 300; // pixels to reach the center
+        const transitionFactor = Math.min(1, scrollY / transitionDistance);
+        
+        const yTarget = scrollY + (viewportHeight / 2) * transitionFactor + (viewportHeight / 2) * clampedGlobalProgress;
+        progressInPath = Math.max(0, Math.min(1, yTarget / scrollHeight));
+      }
+
+      // Direct-DOM update for 120fps buttery drawing with zero React lag
+      if (pathRef.current) {
+        const length = pathRef.current.getTotalLength() || 2800;
+        const offset = length * (1 - progressInPath);
+        pathRef.current.style.strokeDashoffset = `${Math.max(0, offset)}`;
+      }
+      if (ghostPathRef.current) {
+        const length = ghostPathRef.current.getTotalLength() || 2800;
+        const offset = length * (1 - progressInPath);
+        ghostPathRef.current.style.strokeDashoffset = `${Math.max(0, offset)}`;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isMobile, isLoading]);
+
+  return (
+    <>
+      {/* â”€â”€ Typographic Countdown Preloader curtain overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <Preloader onComplete={() => setIsLoading(false)} />
+
+      {!isLoading && <Navbar />}
+
+      {/* â”€â”€ Cinematic reveal wrapper with scaling depth and opacity fade â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div 
+        ref={pageRef}
+        className={`flex flex-col min-h-screen relative transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isLoading 
+            ? "opacity-0 scale-[0.95] max-h-screen overflow-hidden" 
+            : "opacity-100 scale-100"
+        }`}
+      >
+        {/* Scroll-Drawn Telemetry Curl — commented out, preserved for later
+        {!isLoading && !isMobile && (
+          <svg 
+            viewBox="0 0 1000 4000"
+            preserveAspectRatio="none"
+            className="absolute top-0 left-0 w-full h-full pointer-events-none z-[2] hidden lg:block overflow-visible"
+            style={{ pointerEvents: "none", mixBlendMode: "screen" }}
+          >
+            <path 
+              ref={ghostPathRef}
+              d="M 500,-100 C 680,250 820,550 680,950 C 500,1350 120,1650 320,2050 C 520,2450 860,2650 680,3050 C 480,3450 180,3600 500,4000"
+              fill="none"
+              stroke="rgba(249,115,22,0.12)"
+              strokeWidth="24"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ transition: "none" }}
+            />
+            <path 
+              ref={pathRef}
+              d="M 500,-100 C 680,250 820,550 680,950 C 500,1350 120,1650 320,2050 C 520,2450 860,2650 680,3050 C 480,3450 180,3600 500,4000"
+              fill="none"
+              stroke="rgba(249,115,22,0.75)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                transition: "none",
+                filter: "drop-shadow(0px 0px 8px rgba(249, 115, 22, 0.9)) drop-shadow(0px 0px 3px rgba(255,180,80,0.6))"
+              }}
+            />
+          </svg>
+        )}
+        */}
+
+        <main className="flex-1 relative bg-transparent">
+          <section id="home">
+            <Hero />
+            <TextMarquee />
+            <HeroBento />
+          </section>
+          <TelemetryMesh />
+          <About scrollProgress={scrollProgress} />
+          <Projects />
+          <ContactForm />
+          <Footer />
+        </main>
+      </div>
+    </>
+  );
+}
+
