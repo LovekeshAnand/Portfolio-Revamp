@@ -25,23 +25,23 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL("https://lovekesh-builds.vercel.app"),
   title: {
-    default: "Lovekesh Anand | Software Engineer & Systems Architect", // 53 characters
+    default: "Lovekesh Anand | Full-Stack Developer",
     template: "%s | Lovekesh Anand",
   },
-  description: "Lovekesh Anand is a systems-focused software engineer and designer specializing in self-hosted legal AI pipelines, database tuning, and cloud topology.", // 151 characters
+  description: "Lovekesh Anand is a full-stack developer building modern web apps, REST APIs, and real-world projects with React, Next.js, Node.js, and MongoDB.",
   keywords: [
     "Lovekesh Anand",
-    "Systems Engineer",
-    "Software Engineer",
-    "Systems Architect",
-    "Indian Legal AI",
+    "Full-Stack Developer",
+    "Web Developer",
+    "React Developer",
+    "Next.js Developer",
+    "Node.js Developer",
+    "JavaScript Developer",
     "NyayaAI",
     "ServiceFlow",
-    "Database Performance",
-    "Next.js Portfolio",
-    "Go Developer",
-    "Rust Developer",
-    "AWS Cloud Topology"
+    "VocaBrawl",
+    "Portfolio",
+    "India"
   ],
   alternates: {
     canonical: "/",
@@ -60,8 +60,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "Lovekesh Anand | Software Engineer & Systems Architect",
-    description: "Lovekesh Anand is a systems-focused software engineer and designer specializing in self-hosted legal AI pipelines, database tuning, and cloud topology.",
+    title: "Lovekesh Anand | Full-Stack Developer",
+    description: "Lovekesh Anand is a full-stack developer building modern web apps, REST APIs, and real-world projects with React, Next.js, Node.js, and MongoDB.",
     url: "https://lovekesh-builds.vercel.app",
     siteName: "Lovekesh Anand Portfolio",
     images: [
