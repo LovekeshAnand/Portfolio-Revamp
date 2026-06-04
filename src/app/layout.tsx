@@ -77,7 +77,15 @@ export const metadata: Metadata = {
     "reply-to": "lovekeshanand6@gmail.com",
     "robots": "noodp",
   },
+  icons: {
+    icon: [
+      { url: "/images/favicon.png", type: "image/png" },
+    ],
+    shortcut: "/images/favicon.png",
+    apple: "/images/favicon.png",
+  },
 };
+
 
 export default function RootLayout({
   children,
