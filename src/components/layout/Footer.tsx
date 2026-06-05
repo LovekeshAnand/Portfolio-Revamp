@@ -60,13 +60,15 @@ const Footer = () => {
           cursor: default;
           display: inline-block;
         }
-        .watermark-letter:hover {
-          background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          transform: scale(1.08) translateY(-8px);
-          filter: drop-shadow(0px 0px 15px rgba(249, 115, 22, 0.8));
+        @media (hover: hover) {
+          .watermark-letter:hover {
+            background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transform: scale(1.08) translateY(-8px);
+            filter: drop-shadow(0px 0px 15px rgba(249, 115, 22, 0.8));
+          }
         }
       `}</style>
 
@@ -80,7 +82,7 @@ const Footer = () => {
       </div>
 
       {/* ── Main footer body ── */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-14 pb-0 select-none">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-14 pb-0 select-none">
 
         {/* ── Three-column content grid with asymmetric widths ── */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 mb-12">
@@ -179,10 +181,10 @@ const Footer = () => {
 
         {/* ── Bottom bar ── */}
         <div className="py-5 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-4 select-text">
-          <p className="text-xs sm:text-sm font-mono tracking-widest uppercase text-neutral-500">
+          <p className="text-xs sm:text-sm font-mono tracking-widest uppercase text-neutral-500 text-center md:text-left">
             © 2026 Lovekesh Anand · All rights reserved
           </p>
-          <p className="text-xs sm:text-sm font-mono tracking-widest uppercase text-neutral-600 select-none">
+          <p className="text-xs sm:text-sm font-mono tracking-widest uppercase text-neutral-600 select-none text-center md:text-right">
             Built by Lovekesh
           </p>
         </div>
@@ -192,23 +194,26 @@ const Footer = () => {
       {/* ── Giant name watermark — bottom stamp with individual letter hover controls ── */}
       <div className="w-full overflow-visible border-t border-white/[0.01] mt-0 pt-6 pb-12 select-none flex justify-center">
         <h2
-          className="font-[family-name:var(--font-bebas)] leading-none text-center select-none uppercase tracking-[0.05em] flex justify-center gap-x-2 sm:gap-x-4 flex-wrap"
+          className="font-[family-name:var(--font-bebas)] leading-none text-center select-none uppercase tracking-[0.05em] flex justify-center gap-x-4 sm:gap-x-8 flex-wrap"
           style={{
             fontSize: "clamp(3rem, 10vw, 10rem)",
             lineHeight: 1.0,
           }}
         >
-          {Array.from("LOVEKESH ANAND").map((char, idx) => (
-            <span
-              key={idx}
-              className="watermark-letter"
-              style={{
-                width: char === " " ? "0.3em" : "auto",
-              }}
-            >
-              {char === " " ? "\u00A0" : char}
-            </span>
-          ))}
+          <span className="flex select-none">
+            {Array.from("LOVEKESH").map((char, idx) => (
+              <span key={idx} className="watermark-letter">
+                {char}
+              </span>
+            ))}
+          </span>
+          <span className="flex select-none">
+            {Array.from("ANAND").map((char, idx) => (
+              <span key={idx} className="watermark-letter">
+                {char}
+              </span>
+            ))}
+          </span>
         </h2>
       </div>
 
