@@ -459,7 +459,6 @@ const ResumeCard = ({ isActive, onClick }: { isActive?: boolean; onClick: () => 
           width={794}
           height={1123}
           className="w-full h-auto block filter brightness-95 contrast-105 group-hover:scale-[1.02] transition-transform duration-700"
-          priority
         />
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 z-10">
@@ -926,7 +925,6 @@ const About = () => {
                   width={794}
                   height={1123}
                   className="w-full h-auto block rounded-2xl"
-                  priority
                 />
                 {/* Close button */}
                 <button

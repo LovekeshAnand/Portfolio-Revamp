@@ -195,7 +195,7 @@ const Projects = () => {
                 <a href={project.linkUrl} target="_blank" rel="noopener noreferrer"
                    className="block w-full overflow-hidden border border-white/5 aspect-[16/10] bg-neutral-900">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                  <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" loading="lazy" />
                 </a>
                 <div className="mt-6">
                   <span className="text-xs font-medium text-neutral-400 tracking-wider">
@@ -294,7 +294,7 @@ const Projects = () => {
                   }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={projects[0].imageUrl} alt="NyayaAI" className="w-full h-full object-cover" />
+                  <img src={projects[0].imageUrl} alt="NyayaAI" className="w-full h-full object-cover" loading="lazy" />
                 </div>
 
                 {/* Screen 2: ServiceFlow */}
@@ -307,7 +307,7 @@ const Projects = () => {
                   }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={projects[1].imageUrl} alt="ServiceFlow" className="w-full h-full object-cover" />
+                  <img src={projects[1].imageUrl} alt="ServiceFlow" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               </div>
               {/* Bottom lip */}

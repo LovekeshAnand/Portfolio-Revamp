@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Instrument_Serif } from "next/font/google";
 import StickyHeaders from "@/components/common/StickyHeaders";
-import SmoothScroll from "@/components/common/SmoothScroll";
+import ClientProviders from "@/components/common/ClientProviders";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import "./globals.css";
@@ -105,7 +105,7 @@ export default function RootLayout({
         )}
       </head>
       <body className="min-h-full flex flex-col relative font-sans">
-        <SmoothScroll />
+        <ClientProviders />
         {children}
         <StickyHeaders />
         <Analytics />
