@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,6 +11,22 @@ if (typeof window !== "undefined") {
 }
 
 const SmoothScroll = () => {
+  const pathname = usePathname();
+
+  // Reset scroll to top instantly on page navigation, unless navigating to an anchor hash
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!window.location.hash) {
+      const lenis = (window as any).__lenis;
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true, force: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+    }
+  }, [pathname]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 

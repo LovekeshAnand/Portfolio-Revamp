@@ -27,11 +27,15 @@ const Hero = () => {
   const [inView, setInView] = React.useState(true);
   const [lowEnd, setLowEnd] = React.useState(false);
   const [isScrolling, setIsScrolling] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
     setLowEnd(isLowEndDevice());
 
     if (typeof window === "undefined") return;
+
+    const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    setIsMobile(isMobileDevice);
 
     let scrollTimeout: NodeJS.Timeout;
     const handleScroll = () => {
@@ -121,9 +125,9 @@ const Hero = () => {
           offsetY={0}
           scale={1}
           rotation={0}
-          // Cut speed by 75% on low-end / mobile — visually identical but much cheaper
           // Also pause the animation loop during scrolling to ensure buttery smooth page scrolls
-          speed={inView && !isScrolling ? (lowEnd ? 0.25 : 1) : 0}
+          // If on a mobile screen, make it completely static (speed=0)
+          speed={isMobile ? 0 : (inView && !isScrolling ? (lowEnd ? 0.25 : 1) : 0)}
           webGlContextAttributes={{
             antialias: false,
             depth: false,
