@@ -13,18 +13,43 @@ if (typeof window !== "undefined") {
 const SmoothScroll = () => {
   const pathname = usePathname();
 
-  // Reset scroll to top instantly on page navigation, unless navigating to an anchor hash
+  // Reset scroll and recalculate heights on page transition
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    if (!window.location.hash) {
-      const lenis = (window as any).__lenis;
-      if (lenis) {
-        lenis.scrollTo(0, { immediate: true, force: true });
-      } else {
-        window.scrollTo(0, 0);
+    const lenis = (window as any).__lenis;
+    if (!lenis) return;
+
+    // Trigger a resize immediately and after short delays to ensure Lenis recalculates 
+    // the layout limits after Next.js page transition rendering finishes.
+    lenis.resize();
+    const t1 = setTimeout(() => {
+      lenis.resize();
+    }, 100);
+    const t2 = setTimeout(() => {
+      lenis.resize();
+    }, 400);
+    const t3 = setTimeout(() => {
+      lenis.resize();
+    }, 1000);
+
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        // Wait for page render to settle before initiating scroll transition
+        setTimeout(() => {
+          lenis.scrollTo(target, { immediate: false, duration: 1.2 });
+        }, 150);
       }
+    } else {
+      lenis.scrollTo(0, { immediate: true, force: true });
     }
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
   }, [pathname]);
 
   useEffect(() => {
