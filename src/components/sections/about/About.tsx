@@ -710,9 +710,9 @@ const About = () => {
         {/* Dynamic Content Right with Sleek Dark Glassmorphism Backing */}
         <div className="lg:col-span-8 p-8 md:p-16 flex flex-col justify-center select-text bg-black/40 backdrop-blur-md border-b lg:border-b-0 lg:border-l border-white/5">
           <p className="font-author text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.2] text-white tracking-normal font-normal mb-8 max-w-4xl transition-colors duration-500">
-            I am a <span className={`transition-all duration-700 ${activeStates.h1 ? "text-orange-400 font-normal italic" : "text-white"}`}>20-year-old full-stack developer</span> with a growing obsession for the infrastructure that powers software. I don't just write code — I care deeply about <span className={`relative inline transition-all duration-700 font-normal underline underline-offset-4 decoration-[1.5px] ${activeStates.h2 ? "text-orange-400 decoration-orange-500" : "text-white decoration-transparent"}`}>
-              how it deploys, scales, and survives
-            </span> — designing architectures that run efficiently under real CPU, memory, and network pressure.
+            I am a <span className={`transition-all duration-700 ${activeStates.h1 ? "text-orange-400 font-normal italic" : "text-white"}`}>20-year-old full-stack developer</span> with a deep passion for building complete web applications and the systems that power them. I don't just build interfaces, I care deeply about <span className={`relative inline transition-all duration-700 font-normal underline underline-offset-4 decoration-[1.5px] ${activeStates.h2 ? "text-orange-400 decoration-orange-500" : "text-white decoration-transparent"}`}>
+              how applications deploy, scale, and perform,
+            </span> crafting elegant, resilient systems that run smoothly under real-world demands.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/5 pt-8 mt-4 profile-fade-in-trigger">
