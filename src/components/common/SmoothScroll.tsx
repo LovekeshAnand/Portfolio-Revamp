@@ -2,6 +2,12 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const SmoothScroll = () => {
   useEffect(() => {
@@ -26,6 +32,20 @@ const SmoothScroll = () => {
       smoothWheel: true,
       wheelMultiplier: 1.0,
     });
+
+    // Expose lenis globally so components can listen to it
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).__lenis = lenis;
+
+    // On every Lenis scroll tick:
+    // 1. Dispatch a synthetic native 'scroll' event so components using
+    //    window.addEventListener('scroll') (like Projects.tsx) keep working
+    // 2. Call ScrollTrigger.update() so GSAP scroll animations (About.tsx) stay in sync
+    const dispatchScroll = () => {
+      window.dispatchEvent(new Event("scroll"));
+      ScrollTrigger.update();
+    };
+    lenis.on("scroll", dispatchScroll);
 
     let animationFrameId: number;
 
@@ -52,6 +72,9 @@ const SmoothScroll = () => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      lenis.off("scroll", dispatchScroll);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).__lenis;
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("load", handleResize);
       imgs.forEach((img) => {

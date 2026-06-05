@@ -98,18 +98,18 @@ const Projects = () => {
 
     const P = next;
 
-    /* ── Title: starts visible, exits 0.00–0.15 ── */
-    const tOut = ease(remap(P, 0.00, 0.15));
+    /* ── Title: starts visible, exits 0.12–0.25 ── */
+    const tOut = ease(remap(P, 0.12, 0.25));
     const tOp  = clamp01(1 - tOut);
-    const tY   = -(50 * tOut);
+    const tY   = -(60 * tOut);
     if (titleRef.current) {
       titleRef.current.style.opacity = String(tOp);
       titleRef.current.style.transform = `translateY(${tY}px)`;
     }
 
-    /* ── Laptop: enters 0.00–0.20 vertically, shifts left 0.10–0.25 ── */
-    const lIn    = ease(remap(P, 0.00, 0.20));
-    const lShift = ease(remap(P, 0.10, 0.25));
+    /* ── Laptop: enters 0.15–0.35 vertically, shifts left 0.30–0.48 ── */
+    const lIn    = ease(remap(P, 0.15, 0.35));
+    const lShift = ease(remap(P, 0.30, 0.48));
     const lY     = 80 * (1 - lIn);
     const lX     = 25 * (1 - lShift); // 25%→0%: centers 8-col in 12-col grid
     if (laptopRef.current) {
@@ -117,16 +117,16 @@ const Projects = () => {
       laptopRef.current.style.transform = `translateY(${lY}px) translateX(${lX}%)`;
     }
 
-    /* ── Sidebar: enters 0.15–0.28 ── */
-    const sIn = ease(remap(P, 0.15, 0.28));
+    /* ── Sidebar: enters 0.38–0.48 ── */
+    const sIn = ease(remap(P, 0.38, 0.48));
     if (sidebarRef.current) {
       sidebarRef.current.style.opacity = String(sIn);
       sidebarRef.current.style.transform = `translateX(${55 * (1 - sIn)}px)`;
     }
 
     /* ── Laptop screens ── */
-    const nyayaReveal   = P >= 0.25;
-    const serviceReveal = P >= 0.65;
+    const nyayaReveal   = P >= 0.48;
+    const serviceReveal = P >= 0.74;
     if (screen0Ref.current) screen0Ref.current.style.opacity = nyayaReveal ? "0" : "1";
     if (screen1Ref.current)
       screen1Ref.current.style.clipPath = nyayaReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
@@ -134,15 +134,15 @@ const Projects = () => {
       screen2Ref.current.style.clipPath = serviceReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
 
     /* ── Progress bars ── */
-    const b0 = ease(clamp01(remap(P, 0.00, 0.25)));
-    const b1 = ease(remap(P, 0.25, 0.65));
-    const b2 = ease(remap(P, 0.65, 1.00));
+    const b0 = ease(clamp01(remap(P, 0.00, 0.48)));
+    const b1 = ease(remap(P, 0.48, 0.74));
+    const b2 = ease(remap(P, 0.74, 1.00));
     if (bar0Ref.current) bar0Ref.current.style.transform = `scaleX(${b0})`;
     if (bar1Ref.current) bar1Ref.current.style.transform = `scaleX(${b1})`;
     if (bar2Ref.current) bar2Ref.current.style.transform = `scaleX(${b2})`;
 
     /* ── Active project card (discrete state — minimal re-render) ── */
-    const phase = P >= 0.65 ? 2 : P >= 0.25 ? 1 : 0;
+    const phase = P >= 0.74 ? 2 : P >= 0.48 ? 1 : 0;
     if (phase !== prevPhaseRef.current) {
       prevPhaseRef.current = phase;
       setActiveProject(phase);
@@ -211,10 +211,10 @@ const Projects = () => {
                   </div>
                   <a href={project.linkUrl} target="_blank" rel="noopener noreferrer"
                      className="inline-flex items-center gap-1 mt-5 text-xs font-medium text-orange-400 hover:underline tracking-wider uppercase group">
-                    {project.linkText}
-                    <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
-                    </svg>
+                     {project.linkText}
+                     <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={1.5}>
+                       <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H4M10 2v6" />
+                     </svg>
                   </a>
                 </div>
               </div>
@@ -224,11 +224,10 @@ const Projects = () => {
       </div>
     );
   }
-
   /* ─── DESKTOP ─────────────────────────────────────────────────────────────── */
   return (
     <div id="projects" ref={containerRef}
-      className="relative h-[300vh] bg-transparent text-white border-t border-white/5">
+      className="relative h-[650vh] bg-transparent text-white border-t border-white/5">
 
       <section className="sticky top-0 h-screen w-full flex items-center overflow-hidden px-12 xl:px-24">
 
@@ -236,7 +235,7 @@ const Projects = () => {
         <div
           ref={titleRef}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 z-40 pointer-events-none"
-          style={{ opacity: 0, willChange: "transform, opacity" }}
+          style={{ opacity: 1, willChange: "transform, opacity" }}
         >
           <span className="font-sans text-xs font-semibold text-orange-500 tracking-[0.4em] uppercase block mb-4">
             04 / PORTFOLIO

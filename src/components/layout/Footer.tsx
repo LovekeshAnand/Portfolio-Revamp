@@ -190,12 +190,12 @@ const Footer = () => {
       </div>
 
       {/* ── Giant name watermark — bottom stamp with individual letter hover controls ── */}
-      <div className="w-full overflow-hidden border-t border-white/[0.01] pt-6 pb-2 select-none flex justify-center">
+      <div className="w-full overflow-visible border-t border-white/[0.01] mt-0 pt-6 pb-12 select-none flex justify-center">
         <h2
           className="font-[family-name:var(--font-bebas)] leading-none text-center select-none uppercase tracking-[0.05em] flex justify-center gap-x-2 sm:gap-x-4 flex-wrap"
           style={{
-            fontSize: "clamp(3.5rem, 13.5vw, 13.5rem)",
-            lineHeight: 0.88,
+            fontSize: "clamp(3rem, 10vw, 10rem)",
+            lineHeight: 1.0,
           }}
         >
           {Array.from("LOVEKESH ANAND").map((char, idx) => (

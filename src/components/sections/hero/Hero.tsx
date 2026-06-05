@@ -26,19 +26,40 @@ const Hero = () => {
   const parallaxRef = useRef<HTMLHeadingElement>(null);
   const [inView, setInView] = React.useState(true);
   const [lowEnd, setLowEnd] = React.useState(false);
+  const [isScrolling, setIsScrolling] = React.useState(false);
 
   React.useEffect(() => {
     setLowEnd(isLowEndDevice());
 
-    if (typeof window === "undefined" || !containerRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setInView(entry.isIntersecting);
-      },
-      { threshold: 0 }
-    );
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
+    if (typeof window === "undefined") return;
+
+    let scrollTimeout: NodeJS.Timeout;
+    const handleScroll = () => {
+      setIsScrolling(true);
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    let observer: IntersectionObserver | undefined;
+    if (containerRef.current) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setInView(entry.isIntersecting);
+        },
+        { threshold: 0 }
+      );
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimeout);
+      if (observer) observer.disconnect();
+    };
   }, []);
 
   useGSAP(() => {
@@ -85,25 +106,32 @@ const Hero = () => {
           willChange: "transform",
           contain: "strict",
           transform: "translateZ(0)",
+          display: inView ? "block" : "none",
+          pointerEvents: "none",
         }}
       >
-        {inView && (
-          <GrainGradient
-            style={{ height: "100%", width: "100%" }}
-            colorBack="hsl(0, 0%, 0%)"
-            softness={lowEnd ? 0.9 : 0.76}
-            intensity={lowEnd ? 0.25 : 0.45}
-            noise={0}
-            shape="corners"
-            offsetX={0}
-            offsetY={0}
-            scale={1}
-            rotation={0}
-            // Cut speed by 75% on low-end / mobile — visually identical but much cheaper
-            speed={lowEnd ? 0.25 : 1}
-            colors={["hsl(14, 100%, 57%)", "hsl(45, 100%, 51%)", "hsl(340, 82%, 52%)"]}
-          />
-        )}
+        <GrainGradient
+          style={{ height: "100%", width: "100%" }}
+          colorBack="hsl(0, 0%, 0%)"
+          softness={lowEnd ? 0.9 : 0.76}
+          intensity={lowEnd ? 0.25 : 0.45}
+          noise={0}
+          shape="corners"
+          offsetX={0}
+          offsetY={0}
+          scale={1}
+          rotation={0}
+          // Cut speed by 75% on low-end / mobile — visually identical but much cheaper
+          // Also pause the animation loop during scrolling to ensure buttery smooth page scrolls
+          speed={inView && !isScrolling ? (lowEnd ? 0.25 : 1) : 0}
+          webGlContextAttributes={{
+            antialias: false,
+            depth: false,
+            stencil: false,
+            powerPreference: "high-performance"
+          }}
+          colors={["hsl(14, 100%, 57%)", "hsl(45, 100%, 51%)", "hsl(340, 82%, 52%)"]}
+        />
       </div>
 
       {/* Subtle vertical guide lines — desktop only */}

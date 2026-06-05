@@ -125,24 +125,24 @@ const TechCard = ({
 };
 
 const ProfileCard = ({
+  isActive,
   title,
   subtitle,
   desc,
   icon,
   className = "",
 }: {
+  isActive?: boolean;
   title: string;
   subtitle: string;
   desc: string;
   icon: React.ReactNode;
   className?: string;
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+    const rect = e.currentTarget.getBoundingClientRect();
     setCoords({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
@@ -151,9 +151,12 @@ const ProfileCard = ({
 
   return (
     <div
-      ref={cardRef}
       onMouseMove={handleMouseMove}
-      className={`profile-fade-in relative overflow-hidden rounded-2xl border border-white/5 bg-neutral-900/10 p-6 md:p-8 backdrop-blur-md transition-all duration-500 group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] ${className}`}
+      className={`profile-fade-in relative overflow-hidden rounded-2xl border p-6 md:p-8 backdrop-blur-md transition-all duration-500 group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] ${
+        isActive
+          ? "border-orange-500/30 bg-black/60 text-neutral-200 shadow-[6px_6px_0px_rgba(249,115,22,0.08)]"
+          : "border-white/5 bg-neutral-900/10 text-neutral-400"
+      } ${className}`}
     >
       {/* Dynamic Cursor Spotlight Glow */}
       <div
@@ -197,38 +200,45 @@ const ProfileCard = ({
 };
 
 const TimelineCard = ({
+  isActive,
   dates,
   role,
   company,
   locationInfo,
   bullets,
 }: {
+  isActive?: boolean;
   dates: string;
   role: string;
   company: string;
   locationInfo?: string;
   bullets: React.ReactNode[];
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+    const rect = e.currentTarget.getBoundingClientRect();
     setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   return (
     <div className="relative pl-8 group/item experience-fade-in">
       {/* Node Dot with pulse ring */}
-      <div className="absolute left-[6px] -translate-x-1/2 top-[28px] w-3 h-3 rounded-full border-2 bg-black border-neutral-700 group-hover/item:border-orange-500 group-hover/item:bg-orange-500 group-hover/item:shadow-[0_0_8px_rgba(249,115,22,0.8)] group-hover/item:scale-110 transition-all duration-500 z-10">
-        <span className="absolute -inset-1.5 rounded-full border border-orange-500/30 animate-ping opacity-0 group-hover/item:opacity-100 transition-opacity duration-500" />
+      <div className={`absolute left-[6px] -translate-x-1/2 top-[28px] w-3 h-3 rounded-full border-2 bg-black transition-all duration-500 z-10 ${
+        isActive ? "border-orange-500 bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110" : "border-neutral-700"
+      }`}>
+        <span className={`absolute -inset-1.5 rounded-full border border-orange-500/30 animate-ping transition-opacity duration-500 ${
+          isActive ? "opacity-100" : "opacity-0"
+        }`} />
       </div>
 
       <div
-        ref={cardRef}
         onMouseMove={handleMouseMove}
-        className="relative overflow-hidden transition-all duration-500 p-6 rounded-2xl border border-white/5 bg-neutral-900/10 backdrop-blur-md group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] w-full"
+        className={`relative overflow-hidden transition-all duration-500 p-6 rounded-2xl border backdrop-blur-md group w-full ${
+          isActive
+            ? "border-orange-500/30 bg-black/60 shadow-[4px_4px_0px_rgba(249,115,22,0.08)]"
+            : "border-white/5 bg-neutral-900/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+        }`}
       >
         {/* Spotlight */}
         <div
@@ -279,32 +289,35 @@ const TimelineCard = ({
 };
 
 const AchievementCard = ({
+  isActive,
   category,
   title,
   desc,
   linkText,
   linkUrl,
 }: {
+  isActive?: boolean;
   category: string;
   title: string;
   desc: string;
   linkText: string;
   linkUrl: string;
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+    const rect = e.currentTarget.getBoundingClientRect();
     setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   return (
     <div
-      ref={cardRef}
       onMouseMove={handleMouseMove}
-      className="relative overflow-hidden transition-all duration-500 p-6 rounded-2xl border border-white/5 bg-neutral-900/10 backdrop-blur-md group hover:border-orange-500/30 hover:bg-[#0a0a0a]/90 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)] w-full experience-fade-in"
+      className={`relative overflow-hidden transition-all duration-500 p-6 rounded-2xl border backdrop-blur-md group w-full experience-fade-in ${
+        isActive
+          ? "border-orange-500/30 bg-black/60 shadow-[6px_6px_0px_rgba(249,115,22,0.08)] text-white"
+          : "border-white/5 bg-neutral-900/10 text-neutral-400"
+      }`}
     >
       {/* Spotlight */}
       <div
@@ -403,22 +416,23 @@ const EducationCard = ({
   );
 };
 
-const ResumeCard = ({ onClick }: { onClick: () => void }) => {
-  const cardRef = useRef<HTMLButtonElement>(null);
+const ResumeCard = ({ isActive, onClick }: { isActive?: boolean; onClick: () => void }) => {
   const [coords, setCoords] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+    const rect = e.currentTarget.getBoundingClientRect();
     setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   return (
     <button
-      ref={cardRef}
       onClick={onClick}
       onMouseMove={handleMouseMove}
-      className="group relative w-full rounded-2xl overflow-hidden border border-white/5 bg-neutral-900/10 backdrop-blur-md transition-all duration-500 text-left shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:border-orange-500/40 hover:shadow-[0_25px_60px_rgba(249,115,22,0.08)] hover:scale-[1.01] cursor-pointer experience-fade-in"
+      className={`group relative w-full rounded-2xl overflow-hidden border backdrop-blur-md transition-all duration-500 text-left cursor-pointer experience-fade-in ${
+        isActive
+          ? "border-orange-500/40 shadow-[12px_12px_0px_rgba(249,115,22,0.08)]"
+          : "border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-neutral-900/10"
+      }`}
       aria-label="View full resume"
     >
       {/* Spotlight */}
@@ -464,6 +478,61 @@ const ResumeCard = ({ onClick }: { onClick: () => void }) => {
 const About = () => {
   const [resumeOpen, setResumeOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  const [activeStates, setActiveStates] = useState({
+    h1: false,
+    h2: false,
+    bento1: false,
+    bento2: false,
+    timeline: false,
+    achievements: false,
+    resume: false,
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const aboutStart = viewportHeight * 0.15;
+      const aboutDuration = viewportHeight * 3.0;
+      const progress = (scrollY - aboutStart) / aboutDuration;
+      const clampedProgress = Math.max(0, Math.min(1, progress));
+
+      const nextStates = {
+        h1: clampedProgress > 0.15,
+        h2: clampedProgress > 0.22,
+        bento1: clampedProgress > 0.32,
+        bento2: clampedProgress > 0.38,
+        timeline: clampedProgress > 0.58,
+        achievements: clampedProgress > 0.65,
+        resume: clampedProgress > 0.72,
+      };
+
+      setActiveStates((prev) => {
+        if (
+          prev.h1 !== nextStates.h1 ||
+          prev.h2 !== nextStates.h2 ||
+          prev.bento1 !== nextStates.bento1 ||
+          prev.bento2 !== nextStates.bento2 ||
+          prev.timeline !== nextStates.timeline ||
+          prev.achievements !== nextStates.achievements ||
+          prev.resume !== nextStates.resume
+        ) {
+          return nextStates;
+        }
+        return prev;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useGSAP(() => {
     const headings = gsap.utils.toArray<HTMLElement>(".about-heading-reveal");
@@ -622,7 +691,7 @@ const About = () => {
     <div ref={sectionRef} className="relative bg-neutral-950 text-neutral-200 border-t border-white/5">
 
       {/* ── SECTION 01: ABOUT ME (PROFILE) ────────────────────────────────── */}
-      <section id="about" className="relative grid grid-cols-1 lg:grid-cols-12 border-b border-white/5 z-10">
+      <section id="about" className="relative grid grid-cols-1 lg:grid-cols-12 items-start border-b border-white/5 z-10">
         
         {/* Sticky Column Left */}
         <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-white/5 p-8 md:p-12 lg:sticky lg:top-24 h-fit">
@@ -640,12 +709,16 @@ const About = () => {
 
         {/* Dynamic Content Right with Sleek Dark Glassmorphism Backing */}
         <div className="lg:col-span-8 p-8 md:p-16 flex flex-col justify-center select-text bg-black/40 backdrop-blur-md border-b lg:border-b-0 lg:border-l border-white/5">
-          <p className="font-author text-[clamp(1.8rem,3vw,2.6rem)] leading-[1.2] text-neutral-400 tracking-normal font-normal mb-8 max-w-4xl">
-            I am a 20 year old <span className="text-orange-400 font-medium">full-stack developer</span> dedicated to building end-to-end digital experiences. I bridge the gap between <span className="text-white font-medium">elegant frontend interfaces</span> and <span className="text-white font-medium">robust, scalable backend architectures, </span>crafting high-performance software that is clean, secure, and optimized from the pixel level to the cloud deployment layer.
+          <p className="font-author text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.2] text-white tracking-normal font-normal mb-8 max-w-4xl transition-colors duration-500">
+            I am a <span className={`transition-all duration-700 ${activeStates.h1 ? "text-orange-400 font-normal italic" : "text-white"}`}>20-year-old full-stack developer</span> with a growing obsession for the infrastructure that powers software. I don't just write code — I care deeply about <span className={`relative inline-block transition-all duration-700 font-normal ${activeStates.h2 ? "text-orange-400" : "text-white"}`}>
+              how it deploys, scales, and survives
+              <span className={`absolute left-0 right-0 bottom-1 h-[1.5px] bg-orange-500 rounded-full transition-transform duration-500 origin-left ${activeStates.h2 ? "scale-x-100" : "scale-x-0"}`} />
+            </span> — designing architectures that run efficiently under real CPU, memory, and network pressure.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/5 pt-8 mt-4 profile-fade-in-trigger">
             <ProfileCard
+              isActive={activeStates.bento1}
               title="Core Philosophy"
               subtitle="01 / BELIEF_SYSTEM"
               desc="I believe the best engineers understand what happens after `git push`. Great products are shaped by their deployment constraints — the right caching strategy, a well-tuned reverse proxy, and a resilient CI/CD pipeline make all the difference."
@@ -659,6 +732,7 @@ const About = () => {
             />
 
             <ProfileCard
+              isActive={activeStates.bento2}
               title="What I Do"
               subtitle="02 / ACTIVE_OPERATIONS"
               desc="Building full-stack web applications with React, Next.js, and Node.js — while managing the cloud infrastructure they live on. Currently configuring AWS EC2 instances, automating Jenkins pipelines, and hardening OpenVPN gateways at EaseInfra."
@@ -678,7 +752,7 @@ const About = () => {
       </section> 
 
       {/* ── SECTION 02: TECH STACK ────────────────────────────────────────── */}
-      <section id="stack" className="relative grid grid-cols-1 lg:grid-cols-12 border-b border-white/5 z-10">
+      <section id="stack" className="relative grid grid-cols-1 lg:grid-cols-12 items-start border-b border-white/5 z-10">
         
         {/* Sticky Column Left */}
         <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-white/5 p-8 md:p-12 lg:sticky lg:top-24 h-fit">
@@ -714,7 +788,7 @@ const About = () => {
       </section>
 
       {/* ── SECTION 03: INTERACTIVE RESUME & TIMELINE ───────────────────────── */}
-      <section id="experience" className="relative grid grid-cols-1 lg:grid-cols-12 z-10">
+      <section id="experience" className="relative grid grid-cols-1 lg:grid-cols-12 items-start z-10">
         
         {/* Sticky Column Left */}
         <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-white/5 p-8 md:p-12 lg:sticky lg:top-24 h-fit">
@@ -745,6 +819,7 @@ const About = () => {
                 <div className="absolute left-[4px] top-[28px] bottom-[28px] w-[4px] bg-gradient-to-b from-orange-500/10 via-transparent to-transparent blur-[2px] z-0 pointer-events-none" />
                 
                 <TimelineCard
+                  isActive={activeStates.timeline}
                   dates="DEC 2025 – PRESENT"
                   locationInfo="IN-OFFICE"
                   role="IT Intern"
@@ -779,6 +854,7 @@ const About = () => {
                 ACHIEVEMENTS
               </h3>
               <AchievementCard
+                isActive={activeStates.achievements}
                 category="IIT JANAKPURI · HACKATHON WINNER"
                 title="Winner, Matrix 3.0"
                 desc="Clinched the 1st position at the prestigious 36-hour physical hackathon in Delhi. Explore my project profile on"
@@ -819,7 +895,7 @@ const About = () => {
             </h3>
 
             {/* Resume Card Component */}
-            <ResumeCard onClick={() => setResumeOpen(true)} />
+            <ResumeCard isActive={activeStates.resume} onClick={() => setResumeOpen(true)} />
 
             {/* Open in new tab link */}
             <a
