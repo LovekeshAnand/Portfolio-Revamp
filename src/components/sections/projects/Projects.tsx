@@ -61,12 +61,10 @@ const Projects = () => {
   const titleRef      = useRef<HTMLDivElement>(null);
   const laptopRef     = useRef<HTMLDivElement>(null);
   const sidebarRef    = useRef<HTMLDivElement>(null);
-  const screen0Ref    = useRef<HTMLDivElement>(null);
   const screen1Ref    = useRef<HTMLDivElement>(null);
   const screen2Ref    = useRef<HTMLDivElement>(null);
   const bar0Ref       = useRef<HTMLDivElement>(null);
   const bar1Ref       = useRef<HTMLDivElement>(null);
-  const bar2Ref       = useRef<HTMLDivElement>(null);
 
   // Only state used → discrete phase change (card swap) — minimal re-renders
   const [activeProject, setActiveProject] = useState(0);
@@ -125,24 +123,20 @@ const Projects = () => {
     }
 
     /* ── Laptop screens ── */
-    const nyayaReveal   = P >= 0.48;
-    const serviceReveal = P >= 0.74;
-    if (screen0Ref.current) screen0Ref.current.style.opacity = nyayaReveal ? "0" : "1";
+    const serviceReveal = P >= 0.65;
     if (screen1Ref.current)
-      screen1Ref.current.style.clipPath = nyayaReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
+      screen1Ref.current.style.clipPath = "inset(0% 0% 0% 0%)";
     if (screen2Ref.current)
       screen2Ref.current.style.clipPath = serviceReveal ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
 
     /* ── Progress bars ── */
-    const b0 = ease(clamp01(remap(P, 0.00, 0.48)));
-    const b1 = ease(remap(P, 0.48, 0.74));
-    const b2 = ease(remap(P, 0.74, 1.00));
+    const b0 = ease(clamp01(remap(P, 0.00, 0.65)));
+    const b1 = ease(clamp01(remap(P, 0.65, 1.00)));
     if (bar0Ref.current) bar0Ref.current.style.transform = `scaleX(${b0})`;
     if (bar1Ref.current) bar1Ref.current.style.transform = `scaleX(${b1})`;
-    if (bar2Ref.current) bar2Ref.current.style.transform = `scaleX(${b2})`;
 
     /* ── Active project card (discrete state — minimal re-render) ── */
-    const phase = P >= 0.74 ? 2 : P >= 0.48 ? 1 : 0;
+    const phase = P >= 0.65 ? 1 : 0;
     if (phase !== prevPhaseRef.current) {
       prevPhaseRef.current = phase;
       setActiveProject(phase);
@@ -264,32 +258,12 @@ const Projects = () => {
                 {/* Camera */}
                 <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-[6px] h-[6px] rounded-full bg-neutral-700 z-50" />
 
-                {/* Screen 0: idle */}
-                <div
-                  ref={screen0Ref}
-                  className="absolute inset-0 flex flex-col justify-center items-center bg-[#060606]"
-                  style={{ transition: "opacity 700ms ease" }}
-                >
-                  <div className="absolute inset-0 opacity-[0.07]" style={{
-                    backgroundImage: "linear-gradient(to right,#f97316 1px,transparent 1px),linear-gradient(to bottom,#f97316 1px,transparent 1px)",
-                    backgroundSize: "32px 32px"
-                  }} />
-                  <div className="relative z-10 flex flex-col items-center gap-4">
-                    <div className="w-14 h-14 rounded-full border border-orange-500/25 flex items-center justify-center bg-orange-500/5 animate-pulse">
-                      <span className="font-mono text-[11px] text-orange-400 font-medium">SYSTEMS</span>
-                    </div>
-                    <div className="font-mono text-[10px] text-neutral-600 tracking-[0.3em] uppercase">
-                      Lovekesh Anand / Project Core
-                    </div>
-                  </div>
-                </div>
-
                 {/* Screen 1: NyayaAI */}
                 <div
                   ref={screen1Ref}
                   className="absolute inset-0 z-20"
                   style={{
-                    clipPath: "inset(100% 0% 0% 0%)",
+                    clipPath: "inset(0% 0% 0% 0%)",
                     transition: "clip-path 900ms cubic-bezier(0.16,1,0.3,1)"
                   }}
                 >
@@ -325,37 +299,20 @@ const Projects = () => {
             <div className="font-mono text-xs font-medium text-neutral-400 tracking-[0.2em] uppercase">
               INDEX /{" "}
               <span className="text-orange-500 font-semibold">
-                {activeProject === 0 ? "00" : `0${activeProject}`}
+                {`0${activeProject + 1}`}
               </span>
             </div>
 
             {/* Cards */}
             <div className="relative flex-1 mt-4 overflow-hidden">
 
-              {/* Card 0 */}
+              {/* Card 0: NyayaAI */}
               <div className="absolute inset-0 flex flex-col justify-center"
                 style={{
                   opacity: activeProject === 0 ? 1 : 0,
-                  transform: activeProject === 0 ? "translateY(0)" : "translateY(-18px)",
+                  transform: activeProject === 0 ? "translateY(0)" : "translateY(-20px)",
                   transition: "opacity 450ms ease, transform 450ms ease",
                   pointerEvents: activeProject === 0 ? "auto" : "none"
-                }}>
-                <span className="font-sans text-xs font-medium text-orange-500 tracking-[0.3em] uppercase block mb-3">04 / PORTFOLIO</span>
-                <h2 className="font-author text-4xl xl:text-5xl font-normal tracking-tight text-white leading-none">
-                  Selected <br /><em className="italic font-serif text-orange-400">Projects</em>
-                </h2>
-                <p className="font-author text-base text-neutral-400 font-light mt-4 leading-relaxed">
-                  Scroll to review bespoke systems engineering codebases designed under hardware and network constraints.
-                </p>
-              </div>
-
-              {/* Card 1: NyayaAI */}
-              <div className="absolute inset-0 flex flex-col justify-center"
-                style={{
-                  opacity: activeProject === 1 ? 1 : 0,
-                  transform: activeProject === 1 ? "translateY(0)" : activeProject < 1 ? "translateY(20px)" : "translateY(-20px)",
-                  transition: "opacity 450ms ease, transform 450ms ease",
-                  pointerEvents: activeProject === 1 ? "auto" : "none"
                 }}>
                 <div className="text-xs font-medium text-neutral-400 tracking-[0.2em] uppercase mb-1">{projects[0].category}</div>
                 <h3 className="font-author text-4xl xl:text-5xl font-normal tracking-wide text-white leading-none">{projects[0].title}</h3>
@@ -375,13 +332,13 @@ const Projects = () => {
                 </a>
               </div>
 
-              {/* Card 2: ServiceFlow */}
+              {/* Card 1: ServiceFlow */}
               <div className="absolute inset-0 flex flex-col justify-center"
                 style={{
-                  opacity: activeProject === 2 ? 1 : 0,
-                  transform: activeProject === 2 ? "translateY(0)" : "translateY(20px)",
+                  opacity: activeProject === 1 ? 1 : 0,
+                  transform: activeProject === 1 ? "translateY(0)" : "translateY(20px)",
                   transition: "opacity 450ms ease, transform 450ms ease",
-                  pointerEvents: activeProject === 2 ? "auto" : "none"
+                  pointerEvents: activeProject === 1 ? "auto" : "none"
                 }}>
                 <div className="text-xs font-medium text-neutral-400 tracking-[0.2em] uppercase mb-1">{projects[1].category}</div>
                 <h3 className="font-author text-4xl xl:text-5xl font-normal tracking-wide text-white leading-none">{projects[1].title}</h3>
@@ -406,9 +363,8 @@ const Projects = () => {
             {/* Progress lines */}
             <div className="flex items-center gap-5 mt-4 font-mono text-[10px] font-medium text-neutral-400 tracking-wider">
               {[
-                { label: "INTRO",       ref: bar0Ref, active: activeProject === 0 },
-                { label: "NYAYAAI",     ref: bar1Ref, active: activeProject === 1 },
-                { label: "SERVICEFLOW", ref: bar2Ref, active: activeProject === 2 },
+                { label: "NYAYAAI",     ref: bar0Ref, active: activeProject === 0 },
+                { label: "SERVICEFLOW", ref: bar1Ref, active: activeProject === 1 },
               ].map(({ label, ref, active }) => (
                 <div key={label} className="flex items-center gap-2 select-none">
                   <div className="relative w-8 h-[2px] bg-neutral-800 overflow-hidden rounded-full">

@@ -196,7 +196,7 @@ const Footer = () => {
         <h2
           className="font-[family-name:var(--font-bebas)] leading-none text-center select-none uppercase tracking-[0.05em] flex justify-center gap-x-4 sm:gap-x-8 flex-wrap"
           style={{
-            fontSize: "clamp(3rem, 10vw, 10rem)",
+            fontSize: "clamp(4rem, 13vw, 14rem)",
             lineHeight: 1.0,
           }}
         >
