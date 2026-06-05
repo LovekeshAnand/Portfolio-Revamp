@@ -1,15 +1,32 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/hero/Hero";
 import TextMarquee from "@/components/ui/TextMarquee";
 import HeroBento from "@/components/sections/hero/HeroBento";
-import TelemetryMesh from "@/components/ui/TelemetryMesh";
-import About from "@/components/sections/about/About";
-import Projects from "@/components/sections/projects/Projects";
-import ContactForm from "@/components/sections/contact/ContactForm";
-import Footer from "@/components/layout/Footer";
+
+// Code-split below-the-fold components to optimize initial page load time and bundle size
+const TelemetryMesh = dynamic(() => import("@/components/ui/TelemetryMesh"), {
+  loading: () => <div className="min-h-[400px] bg-neutral-950/10 animate-pulse" />
+});
+
+const About = dynamic(() => import("@/components/sections/about/About"), {
+  loading: () => <div className="min-h-[600px] bg-neutral-950/10 animate-pulse" />
+});
+
+const Projects = dynamic(() => import("@/components/sections/projects/Projects"), {
+  loading: () => <div className="min-h-[800px] bg-neutral-950/10 animate-pulse" />
+});
+
+const ContactForm = dynamic(() => import("@/components/sections/contact/ContactForm"), {
+  loading: () => <div className="min-h-[400px] bg-neutral-950/10 animate-pulse" />
+});
+
+const Footer = dynamic(() => import("@/components/layout/Footer"), {
+  loading: () => <div className="min-h-[300px] bg-neutral-950/10 animate-pulse" />
+});
 
 export default function Home() {
   const pageRef = useRef<HTMLDivElement>(null);
