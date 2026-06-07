@@ -11,7 +11,7 @@ const menuLinks = [
   { name: "BLOG", href: "/blog" }
 ];
 
-const contactLink = { name: "CONTACT", href: "/contact" };
+const contactLink = { name: "CONTACT", href: "/#contact" };
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

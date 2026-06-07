@@ -779,9 +779,9 @@ const About = () => {
                 ACHIEVEMENTS
               </h3>
               <AchievementCard
-                category="IITM JANAKPURI · HACKATHON WINNER"
-                title="Winner, Matrix 3.0"
-                desc="Clinched the 1st position at the prestigious 36-hour physical hackathon in Delhi. Explore my project profile on"
+                category="IITM JANAKPURI · HACKATHON RUNNER-UP"
+                title="Runner-Up, Matrix 3.0"
+                desc="Clinched the 2nd position at the prestigious 36-hour physical hackathon in Delhi. Explore my project profile on"
                 linkText="Devfolio"
                 linkUrl="https://matrix-3.devfolio.co/projects"
               />

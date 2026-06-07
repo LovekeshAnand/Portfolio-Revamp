@@ -160,7 +160,7 @@ const Footer = () => {
                 { label: "About", href: "/#about" },
                 { label: "Experience", href: "/#experience" },
                 { label: "Projects", href: "/projects" },
-                { label: "Contact", href: "/contact" },
+                { label: "Contact", href: "/#contact" },
                 { label: "Sitemap", href: "/sitemap.xml", target: "_blank" },
               ].map((link) => (
                 <a
