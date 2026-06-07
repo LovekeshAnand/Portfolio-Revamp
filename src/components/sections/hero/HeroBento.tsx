@@ -331,9 +331,9 @@ const HeroBento = () => {
                     
                     {/* Expandable details styling */}
                     <div className={`overflow-hidden transition-all duration-300 ${
-                      isActive ? "max-h-6 opacity-100 mt-1" : "max-h-0 opacity-0"
+                      isActive ? "max-h-20 opacity-100 mt-1" : "max-h-0 opacity-0"
                     }`}>
-                      <span className="text-[10px] font-mono text-orange-400/90 leading-none bg-orange-500/5 px-2 py-0.5 rounded border border-orange-500/10">
+                      <span className="inline-block text-[10px] font-mono text-orange-400/90 leading-normal bg-orange-500/5 px-2 py-1 rounded border border-orange-500/10 max-w-full whitespace-normal break-words">
                         ↳ {step.details}
                       </span>
                     </div>
