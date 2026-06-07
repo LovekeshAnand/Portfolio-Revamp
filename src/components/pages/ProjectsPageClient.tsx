@@ -70,7 +70,7 @@ function ProjectsGallery() {
         {/* Page Header */}
         <div className="mb-14">
           <h1 className="font-author text-5xl md:text-7xl font-normal tracking-tight text-white leading-none">
-            Things I&apos;ve <em className="italic font-serif text-orange-400">built</em>
+            All <em className="italic font-serif text-orange-400">projects</em>
           </h1>
           <p className="font-author text-base text-neutral-400 font-light mt-5 max-w-xl leading-relaxed">
             {projectsData.length} projects — from offline AI pipelines and legal platforms to multiplayer games and developer tools.

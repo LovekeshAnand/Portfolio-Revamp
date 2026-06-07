@@ -32,7 +32,7 @@ export default function BlogPageClient() {
         {/* Page Header */}
         <div className="mb-16">
           <h1 className="font-author text-5xl md:text-7xl font-normal tracking-tight text-white leading-none">
-            Things I&apos;ve <em className="italic font-serif text-orange-400">written</em>
+            All <em className="italic font-serif text-orange-400">articles</em>
           </h1>
           <p className="font-author text-base text-neutral-400 font-light mt-5 max-w-xl leading-relaxed">
             Real experiences building systems, breaking servers, and learning the hard way. No fluff — just what actually happened.
